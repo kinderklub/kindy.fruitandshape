@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Buah & Bentuk | Fruit Shape Adventure</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    @font-face {
+      font-family: 'QuickSans';
+      src: local('Quicksand Bold'), local('Quicksand-Bold'), url('https://fonts.gstatic.com/s/quicksand/v31/6xKtdSZaM9iE8KbpRA_hK1QN.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'QuickSans';
+      src: local('Quicksand SemiBold'), local('Quicksand-SemiBold'), url('https://fonts.gstatic.com/s/quicksand/v31/6xKtdSZaM9iE8KbpRA_hJFQ.woff2') format('woff2');
+      font-weight: 600;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'QuickSans';
+      src: local('Quicksand Medium'), local('Quicksand-Medium'), url('https://fonts.gstatic.com/s/quicksand/v31/6xKtdSZaM9iE8KbpRA_hKFc.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+    }
+
+    * {
+      font-family: 'QuickSans', 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      box-sizing: border-box;
+    }
+
+    /* Diorama 3D chunky shadow and highlight utilities */
+    .diorama-card {
+      background: rgba(255, 255, 255, 0.94);
+      border-radius: 28px;
+      box-shadow: 0 16px 36px -8px rgba(220, 140, 180, 0.35), 0 6px 0 0 #f3b8cf, inset 0 2px 4px rgba(255, 255, 255, 0.9);
+      border: 3px solid #ffdeeb;
+    }
+
+    .diorama-btn {
+      position: relative;
+      border-radius: 24px;
+      transition: all 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 8px 0 0 var(--btn-shadow, #f08cb4), 0 16px 20px rgba(180, 90, 130, 0.25);
+      border: 3px solid rgba(255, 255, 255, 0.85);
+      touch-action: manipulation;
+    }
+
+    .diorama-btn:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 0 var(--btn-shadow, #f08cb4), 0 6px 12px rgba(180, 90, 130, 0.2);
+    }
+
+    .btn-pink { background: linear-gradient(180deg, #ff9ec8 0%, #ff76ad 100%); --btn-shadow: #d84d85; color: white; }
+    .btn-peach { background: linear-gradient(180deg, #ffbe96 0%, #ff9d66 100%); --btn-shadow: #d9692c; color: white; }
+    .btn-lavender { background: linear-gradient(180deg, #d3b4fc 0%, #b283f6 100%); --btn-shadow: #8750d4; color: white; }
+    .btn-blue { background: linear-gradient(180deg, #9ae2ff 0%, #63c9fa 100%); --btn-shadow: #2f9cd4; color: white; }
+    .btn-butter { background: linear-gradient(180deg, #fff185 0%, #ffd943 100%); --btn-shadow: #d1a815; color: #6d4b00; }
+    .btn-aqua { background: linear-gradient(180deg, #99f3e9 0%, #5ce4d3 100%); --btn-shadow: #2cb2a0; color: #044b42; }
+
+    /* Interactive animations */
+    @keyframes gentleWobble {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-8deg) scale(0.96); }
+      40% { transform: rotate(8deg) scale(0.96); }
+      60% { transform: rotate(-4deg); }
+      80% { transform: rotate(4deg); }
+    }
+    .anim-wobble { animation: gentleWobble 0.5s ease-in-out; }
+
+    @keyframes popCheer {
+      0% { transform: scale(0.9); }
+      45% { transform: scale(1.15) rotate(3deg); }
+      70% { transform: scale(0.98) rotate(-2deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .anim-cheer { animation: popCheer 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+    @keyframes softFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
+    }
+    .anim-float { animation: softFloat 3.2s ease-in-out infinite; }
+
+    .touch-none {
+      touch-action: none !important;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #ffeaf3; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: #ffbad6; border-radius: 10px; border: 2px solid #ffeaf3; }
+  </style>
+</head>
+<body class="h-screen w-screen overflow-hidden bg-[#ffedf5] text-[#5c3e4f] flex flex-col justify-between relative">
+  <div class="fixed inset-0 w-full h-full pointer-events-none z-0">
+    <svg id="full-screen-background" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" aria-hidden="true">
+      <defs>
+        <!-- Gradients for Sky & Terrain -->
+        <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffd5ec"/>
+          <stop offset="40%" stop-color="#fee1f0"/>
+          <stop offset="70%" stop-color="#e9e7fd"/>
+          <stop offset="100%" stop-color="#daf3ff"/>
+        </linearGradient>
+
+        <linearGradient id="distantHillGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f8c9e7"/>
+          <stop offset="100%" stop-color="#d6b8f6"/>
+        </linearGradient>
+
+        <linearGradient id="midHillGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fed6a6"/>
+          <stop offset="50%" stop-color="#ffb8cf"/>
+          <stop offset="100%" stop-color="#fca2be"/>
+        </linearGradient>
+
+        <linearGradient id="frontTerrainGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffcbe3"/>
+          <stop offset="40%" stop-color="#ffb1d4"/>
+          <stop offset="100%" stop-color="#f28bb8"/>
+        </linearGradient>
+
+        <linearGradient id="candyRoofPink" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ff8cb7"/>
+          <stop offset="100%" stop-color="#eb538c"/>
+        </linearGradient>
+
+        <linearGradient id="candyRoofYellow" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#fff59d"/>
+          <stop offset="100%" stop-color="#fbc02d"/>
+        </linearGradient>
+
+        <linearGradient id="woodTableGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fce2bb"/>
+          <stop offset="100%" stop-color="#e2ab74"/>
+        </linearGradient>
+
+        <filter id="chunkyShadow" x="-10%" y="-10%" width="120%" height="130%">
+          <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#a45377" flood-opacity="0.25"/>
+        </filter>
+        <filter id="cloudSoftShadow" x="-10%" y="-10%" width="120%" height="130%">
+          <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#c19fb7" flood-opacity="0.2"/>
+        </filter>
+      </defs>
+
+      <!-- TOP AREA: Sky & Magical Clouds -->
+      <rect width="1440" height="900" fill="url(#skyGrad)"/>
+
+      <!-- Distant Floating Shapes / Hot Air Balloons -->
+      <g opacity="0.85">
+        <!-- Floating Peach Balloon Left -->
+        <g id="balloon1">
+          <animateTransform attributeName="transform" type="translate" values="0,0; 0,-18; 0,0" dur="6s" repeatCount="indefinite" ease="ease-in-out"/>
+          <ellipse cx="220" cy="160" rx="34" ry="42" fill="#ff9eb5" filter="url(#chunkyShadow)"/>
+          <path d="M 200,160 Q 220,120 240,160 Q 220,200 200,160" fill="#ffd1e0"/>
+          <rect x="214" y="208" width="12" height="10" rx="2" fill="#d2875b"/>
+          <line x1="210" y1="198" x2="215" y2="208" stroke="#aa7550" stroke-width="1.5"/>
+          <line x1="230" y1="198" x2="225" y2="208" stroke="#aa7550" stroke-width="1.5"/>
+          <!-- Star shape on balloon -->
+          <polygon points="220,150 223,158 232,158 225,163 227,171 220,166 213,171 215,163 208,158 217,158" fill="#fff9b0"/>
+        </g>
+
+        <!-- Floating Star Balloon Right -->
+        <g id="balloon2">
+          <animateTransform attributeName="transform" type="translate" values="0,0; 0,-24; 0,0" dur="8s" begin="1s" repeatCount="indefinite" ease="ease-in-out"/>
+          <ellipse cx="1240" cy="180" rx="38" ry="44" fill="#a4d4ff" filter="url(#chunkyShadow)"/>
+          <ellipse cx="1240" cy="180" rx="18" ry="44" fill="#d2edff"/>
+          <rect x="1234" y="230" width="12" height="10" rx="2" fill="#d2875b"/>
+          <line x1="1230" y1="220" x2="1235" y2="230" stroke="#aa7550" stroke-width="1.5"/>
+          <line x1="1250" y1="220" x2="1245" y2="230" stroke="#aa7550" stroke-width="1.5"/>
+        </g>
+      </g>
+
+      <!-- Puffy Drifting Clouds -->
+      <g filter="url(#cloudSoftShadow)">
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="-150,0; 1480,0" dur="68s" repeatCount="indefinite"/>
+          <path d="M 50,110 Q 75,70 120,80 Q 165,65 195,100 Q 230,105 235,135 Q 230,165 180,165 L 70,165 Q 40,155 50,110 Z" fill="#ffffff" opacity="0.95"/>
+          <ellipse cx="130" cy="100" rx="35" ry="25" fill="#fff3fa"/>
+        </g>
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="200,0; 1800,0" dur="84s" repeatCount="indefinite"/>
+          <path d="M 550,70 Q 580,35 630,45 Q 675,30 710,65 Q 750,75 750,105 Q 740,135 690,135 L 570,135 Q 535,120 550,70 Z" fill="#ffffff" opacity="0.92"/>
+        </g>
+        <g>
+          <animateTransform attributeName="transform" type="translate" values="900,0; -500,0" dur="92s" repeatCount="indefinite"/>
+          <path d="M 980,115 Q 1010,80 1060,90 Q 1105,75 1135,110 Q 1175,118 1175,145 Q 1165,175 1110,175 L 1000,175 Q 965,160 980,115 Z" fill="#ffffff" opacity="0.9"/>
+        </g>
+      </g>
+
+      <!-- Layer 1: Distant Miniature Pastel Hills & Toy Castles -->
+      <path d="M -50,460 Q 220,310 520,440 T 1100,410 Q 1300,340 1500,450 L 1500,900 L -50,900 Z" fill="url(#distantHillGrad)"/>
+      
+      <!-- Distant Chibi Fruit Towers -->
+      <g opacity="0.75">
+        <!-- Orange Dome Pavilion Left -->
+        <rect x="280" y="310" width="70" height="85" rx="8" fill="#e8c3f5"/>
+        <path d="M 270,310 Q 315,245 360,310 Z" fill="#ffb469"/>
+        <circle cx="315" cy="245" r="7" fill="#ff8642"/>
+        <!-- Strawberry Chapel Right -->
+        <rect x="1080" y="295" width="80" height="95" rx="10" fill="#fed6ec"/>
+        <path d="M 1070,295 C 1070,225 1170,225 1170,295 Z" fill="#ff769b"/>
+        <!-- Star topper -->
+        <polygon points="1120,215 1123,223 1131,223 1125,228 1127,236 1120,231 1113,236 1115,228 1109,223 1117,223" fill="#ffe259"/>
+      </g>
+
+      <!-- Layer 2: Midground Rolling Hills -->
+      <path d="M -20,560 Q 260,450 640,540 Q 1020,460 1460,550 L 1460,900 L -20,900 Z" fill="url(#midHillGrad)"/>
+
+      <!-- Midground Village: Left Fruit Shop Diorama -->
+      <g filter="url(#chunkyShadow)">
+        <!-- Shop Base -->
+        <rect x="80" y="440" width="190" height="150" rx="16" fill="#fff7eb"/>
+        <rect x="90" y="450" width="170" height="130" rx="12" fill="#fbe3cf"/>
+        <!-- Wooden trim & pillars -->
+        <rect x="82" y="440" width="18" height="150" rx="6" fill="#f0b686"/>
+        <rect x="250" y="440" width="18" height="150" rx="6" fill="#f0b686"/>
+        <!-- Striped Awning Roof with 3D scalloped edge -->
+        <path d="M 65,440 L 285,440 L 275,395 L 75,395 Z" fill="#ff8dbb"/>
+        <path d="M 75,395 L 110,395 L 105,440 L 68,440 Z" fill="#ffd9e8"/>
+        <path d="M 145,395 L 180,395 L 175,440 L 140,440 Z" fill="#ffd9e8"/>
+        <path d="M 215,395 L 250,395 L 245,440 L 210,440 Z" fill="#ffd9e8"/>
+        <!-- Scallop awning trim -->
+        <path d="M 65,440 Q 75,455 85,440 Q 95,455 105,440 Q 115,455 125,440 Q 135,455 145,440 Q 155,455 165,440 Q 175,455 185,440 Q 195,455 205,440 Q 215,455 225,440 Q 235,455 245,440 Q 255,455 265,440 Q 275,455 285,440" fill="#f06197"/>
+        <!-- Shop Signboard (Shape Sign) -->
+        <rect x="125" y="355" width="100" height="34" rx="10" fill="#fff" stroke="#fca2be" stroke-width="3"/>
+        <circle cx="145" cy="372" r="8" fill="#ff7da7"/>
+        <polygon points="175,364 183,379 167,379" fill="#ffba49"/>
+        <rect x="195" y="365" width="14" height="14" rx="2" fill="#5ee2d2"/>
+      </g>
+
+      <!-- Center-Right Chibi Shape Windmill / Fruit Tower -->
+      <g filter="url(#chunkyShadow)">
+        <!-- Tower Body -->
+        <polygon points="1200,600 1230,410 1330,410 1360,600" fill="#ffe9c7"/>
+        <polygon points="1200,600 1230,410 1260,410 1240,600" fill="#edd0a4"/>
+        <!-- Conical Strawberry Roof -->
+        <path d="M 1215,412 C 1215,330 1345,330 1345,412 Z" fill="#ff6b95"/>
+        <ellipse cx="1280" cy="412" rx="65" ry="12" fill="#eb4776"/>
+        <!-- Windmill Sails (Rotating Shape Blades) -->
+        <g transform="translate(1280, 420)">
+          <g>
+            <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="24s" repeatCount="indefinite"/>
+            <!-- Center pin -->
+            <circle cx="0" cy="0" r="10" fill="#ffe153"/>
+            <!-- 4 Shape Blades with wooden arms -->
+            <line x1="0" y1="0" x2="0" y2="-90" stroke="#d59c6b" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="0" cy="-90" r="22" fill="#ff9ec8" stroke="#fff" stroke-width="3"/>
+            <line x1="0" y1="0" x2="90" y2="0" stroke="#d59c6b" stroke-width="5" stroke-linecap="round"/>
+            <polygon points="90,-16 112,0 90,16 68,0" fill="#fed658" stroke="#fff" stroke-width="3"/>
+            <line x1="0" y1="0" x2="0" y2="90" stroke="#d59c6b" stroke-width="5" stroke-linecap="round"/>
+            <rect x="-16" y="74" width="32" height="32" rx="6" fill="#88d8fc" stroke="#fff" stroke-width="3"/>
+            <line x1="0" y1="0" x2="-90" y2="0" stroke="#d59c6b" stroke-width="5" stroke-linecap="round"/>
+            <polygon points="-90,-18 -72,16 -108,16" fill="#b993f8" stroke="#fff" stroke-width="3"/>
+          </g>
+        </g>
+      </g>
+
+      <!-- Layer 3: FOREGROUND TERRAIN (22-25% Bottom Coverage) -->
+      <path d="M -20,680 Q 320,620 720,660 Q 1120,610 1460,670 L 1460,900 L -20,900 Z" fill="url(#frontTerrainGrad)"/>
+      <!-- Soft Highlights on ground slope -->
+      <path d="M 0,690 Q 340,640 730,675 Q 1120,630 1440,685 L 1440,705 Q 1120,650 730,695 Q 340,660 0,710 Z" fill="#ffeaf5" opacity="0.6"/>
+
+      <!-- Foreground Left Cluster: Chunky 3D Fruit Baskets and Wooden Crates -->
+      <g filter="url(#chunkyShadow)">
+        <!-- Wooden Crate 1 -->
+        <rect x="40" y="730" width="130" height="90" rx="8" fill="#e8a872"/>
+        <rect x="45" y="735" width="120" height="22" rx="4" fill="#fbd1a8"/>
+        <rect x="45" y="762" width="120" height="22" rx="4" fill="#fbd1a8"/>
+        <rect x="45" y="789" width="120" height="22" rx="4" fill="#fbd1a8"/>
+        <!-- Corner metal braces -->
+        <rect x="40" y="730" width="14" height="90" rx="3" fill="#b88358"/>
+        <rect x="156" y="730" width="14" height="90" rx="3" fill="#b88358"/>
+        <!-- Watermelon Slices in Crate (Triangle shapes) -->
+        <path d="M 60,735 A 40,40 0 0,0 120,735 Z" fill="#6bc97a" transform="rotate(-20 90 735)"/>
+        <path d="M 64,735 A 36,36 0 0,0 116,735 Z" fill="#ff4d6d" transform="rotate(-20 90 735)"/>
+        <circle cx="85" cy="742" r="2" fill="#521f28"/>
+        <circle cx="95" cy="740" r="2" fill="#521f28"/>
+
+        <!-- Foreground Woven Basket with Oranges (Circles) -->
+        <ellipse cx="190" cy="800" rx="55" ry="32" fill="#b07646"/>
+        <ellipse cx="190" cy="790" rx="55" ry="24" fill="#7d4e28"/>
+        <!-- Oranges bulging out -->
+        <circle cx="165" cy="775" r="20" fill="#ffa133"/>
+        <circle cx="165" cy="770" r="16" fill="#ffb854" opacity="0.6"/>
+        <circle cx="195" cy="768" r="22" fill="#ff9015"/>
+        <circle cx="195" cy="762" r="18" fill="#ffb854" opacity="0.6"/>
+        <circle cx="218" cy="780" r="17" fill="#ffa73d"/>
+        <!-- Basket Front Wall -->
+        <path d="M 135,790 C 135,835 245,835 245,790 Z" fill="#cb8c56"/>
+        <ellipse cx="190" cy="790" rx="55" ry="8" fill="#e0a36e" stroke="#ae713f" stroke-width="2"/>
+      </g>
+
+      <!-- Foreground Right Cluster: Chunky Toy Daisies, Starfruit Crate & Barrels -->
+      <g filter="url(#chunkyShadow)">
+        <!-- Pastel Toy Barrel -->
+        <ellipse cx="1320" cy="750" rx="45" ry="18" fill="#9de3f8"/>
+        <path d="M 1275,750 L 1275,830 C 1275,845 1365,845 1365,830 L 1365,750 Z" fill="#75cefa"/>
+        <ellipse cx="1320" cy="750" rx="45" ry="14" fill="#bbeeec"/>
+        <rect x="1275" y="780" width="90" height="8" fill="#4faed8"/>
+        <!-- Starfruit protruding from barrel (Star shape) -->
+        <polygon points="1320,720 1326,736 1342,736 1330,746 1334,762 1320,752 1306,762 1310,746 1298,736 1314,736" fill="#ffe043" stroke="#e8b80b" stroke-width="2"/>
+        <polygon points="1320,724 1324,736 1338,736 1328,744 1331,756 1320,748 1309,756 1312,744 1302,736 1316,736" fill="#fff58a"/>
+
+        <!-- Chunky 3D Storybook Daisies -->
+        <g id="daisyGroup">
+          <animateTransform attributeName="transform" type="rotate" values="-2 1380 840; 2 1380 840; -2 1380 840" dur="4.2s" repeatCount="indefinite" ease="ease-in-out"/>
+          <path d="M 1380,840 Q 1385,800 1375,770" stroke="#7ec480" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <circle cx="1375" cy="765" r="10" fill="#ffd13b"/>
+          <circle cx="1362" cy="765" r="7" fill="#fff"/>
+          <circle cx="1388" cy="765" r="7" fill="#fff"/>
+          <circle cx="1375" cy="752" r="7" fill="#fff"/>
+          <circle cx="1375" cy="778" r="7" fill="#fff"/>
+        </g>
+      </g>
+
+      <!-- Center Toy Stepping Stones Path -->
+      <g opacity="0.8">
+        <ellipse cx="720" cy="760" rx="46" ry="16" fill="#fce4b8" stroke="#ebc692" stroke-width="3"/>
+        <ellipse cx="640" cy="790" rx="54" ry="18" fill="#fce4b8" stroke="#ebc692" stroke-width="3"/>
+        <ellipse cx="800" cy="800" rx="52" ry="18" fill="#fce4b8" stroke="#ebc692" stroke-width="3"/>
+        <ellipse cx="720" cy="835" rx="65" ry="22" fill="#fce4b8" stroke="#ebc692" stroke-width="3"/>
+      </g>
+    </svg>
+  </div>
+
+  <header class="relative z-20 w-full px-3 pt-3 pb-1 max-w-5xl mx-auto flex items-center justify-between">
+    <!-- Brand / Return Home -->
+    <button id="btn-brand-home" class="flex items-center space-x-2 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border-2 border-[#ffcbe1] shadow-sm hover:scale-105 active:scale-95 transition-all">
+      <svg class="w-7 h-7 text-[#ff5c98]" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18" fill="#ff76ad"/>
+        <path d="M 20,8 C 15,8 10,13 10,19 C 10,27 20,32 20,32 C 20,32 30,27 30,19 C 30,13 25,8 20,8 Z" fill="#ff387a"/>
+        <path d="M 18,6 C 18,3 22,3 22,6" stroke="#5cb85c" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="15" cy="17" r="2.5" fill="#fff"/>
+        <circle cx="25" cy="17" r="2.5" fill="#fff"/>
+        <ellipse cx="20" cy="22" rx="3.5" ry="2" fill="#521f28"/>
+      </svg>
+      <div class="text-left leading-tight">
+        <span class="block text-sm font-extrabold text-[#d83c74] tracking-wide" id="nav-brand-title">Buah & Bentuk</span>
+        <span class="block text-[10px] font-bold text-[#b47794]" id="nav-brand-sub">Kindy Klub</span>
+      </div>
+    </button>
+
+    <!-- Center Active Stat Display (Visible during Gameplay) -->
+    <div id="header-stats" class="hidden items-center space-x-2 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full border-2 border-[#ffcbe1] shadow-sm">
+      <div class="flex items-center space-x-1.5">
+        <svg class="w-5 h-5 text-[#f59e0b]" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        <span class="text-xs font-bold text-[#92536e]" id="lbl-score">Skor:</span>
+        <span id="stat-score-val" class="text-sm font-extrabold text-[#ff4382]">0</span>
+      </div>
+      <span class="text-[#fbc2d9] font-bold">|</span>
+      <div class="flex items-center space-x-1">
+        <span class="text-xs font-bold text-[#92536e]" id="lbl-task">Soalan:</span>
+        <span id="stat-task-val" class="text-sm font-extrabold text-[#7442d4]">1/5</span>
+      </div>
+    </div>
+
+    <!-- Right Controls: Audio Toggle & Language Switcher -->
+    <div class="flex items-center space-x-2">
+      <!-- Sound Mute Button -->
+      <button id="btn-sound-toggle" aria-label="Toggle Sound" class="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full border-2 border-[#ffcbe1] flex items-center justify-center text-[#ff5c98] shadow-sm active:scale-90 transition-transform">
+        <svg id="icon-sound-on" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+        </svg>
+        <svg id="icon-sound-off" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>
+        </svg>
+      </button>
+
+      <!-- Language Toggle Pill -->
+      <div class="bg-white/95 p-0.5 rounded-full border-2 border-[#ffcbe1] flex shadow-sm">
+        <button id="lang-bm" class="px-2.5 py-1 text-xs font-black rounded-full transition-all bg-[#ff6b9d] text-white">BM</button>
+        <button id="lang-en" class="px-2.5 py-1 text-xs font-black rounded-full transition-all text-[#ba7b97] hover:text-[#ff6b9d]">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="relative z-10 flex-1 w-full max-w-5xl mx-auto px-3 py-1 flex items-center justify-center overflow-y-auto">
+
+    <!-- ========================================== -->
+    <!-- SCREEN 1: HOME SCREEN                      -->
+    <!-- ========================================== -->
+    <section id="screen-home" class="w-full flex flex-col items-center text-center animate-fade-in py-2">
+      <!-- Title Card with Dimensional Badge -->
+      <div class="relative mb-3 max-w-md w-full">
+        <!-- Floating Chibi Fruit Props around Title -->
+        <div class="absolute -top-3 -left-3 anim-float" style="animation-delay: 0.2s;">
+          <svg class="w-12 h-12" viewBox="0 0 60 60">
+            <circle cx="30" cy="32" r="22" fill="#ff4d6d" filter="drop-shadow(0 4px 6px rgba(180,40,80,0.3))"/>
+            <path d="M 30,10 Q 35,5 30,2" stroke="#5cb85c" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <ellipse cx="38" cy="10" rx="7" ry="4" fill="#75d175"/>
+            <ellipse cx="25" cy="26" rx="3.5" ry="5.5" fill="#ffffff" opacity="0.8"/>
+          </svg>
+        </div>
+        <div class="absolute -top-4 -right-2 anim-float" style="animation-delay: 1.4s;">
+          <svg class="w-12 h-12" viewBox="0 0 60 60">
+            <polygon points="30,8 37,22 52,22 40,32 44,48 30,38 16,48 20,32 8,22 23,22" fill="#ffcf33" filter="drop-shadow(0 4px 6px rgba(190,130,10,0.3))"/>
+            <circle cx="27" cy="27" r="2.5" fill="#5a3900"/>
+            <circle cx="33" cy="27" r="2.5" fill="#5a3900"/>
+          </svg>
+        </div>
+
+        <div class="diorama-card p-4 sm:p-5">
+          <h1 id="home-title" class="text-3xl sm:text-4xl font-extrabold text-[#d83c74] tracking-tight drop-shadow-sm">
+            Buah & Bentuk
+          </h1>
+          <p id="home-subtitle" class="text-sm sm:text-base font-bold text-[#945f78] mt-1">
+            Jom teroka dunia buah dan bentuk yang comel!
+          </p>
+        </div>
+      </div>
+
+      <!-- Mascot Greeting Showcase -->
+      <div id="home-mascot-container" class="w-36 h-36 sm:w-44 sm:h-44 relative my-1 cursor-pointer transform hover:scale-105 transition-transform" onclick="triggerMascotCheer()">
+        <!-- Interactive Mascot SVG (Bubu/Kiki the Fruit Bear) -->
+        <svg id="mascot-svg" class="w-full h-full" viewBox="0 0 160 160">
+          <defs>
+            <radialGradient id="mascotBodyGrad" cx="40%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#fff5eb"/>
+              <stop offset="65%" stop-color="#fed6be"/>
+              <stop offset="100%" stop-color="#f8b695"/>
+            </radialGradient>
+            <linearGradient id="peachCheek" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ff7ca5"/>
+              <stop offset="100%" stop-color="#ff5487"/>
+            </linearGradient>
+          </defs>
+          <!-- Ground Shadow -->
+          <ellipse cx="80" cy="146" rx="42" ry="10" fill="#cc8da7" opacity="0.35"/>
+          <!-- Mascot Group with animated breathing -->
+          <g id="mascot-body-group">
+            <animateTransform attributeName="transform" type="translate" values="0,0; 0,-3; 0,0" dur="2.4s" repeatCount="indefinite" ease="ease-in-out"/>
+            <!-- Round Chunky Ears -->
+            <circle cx="48" cy="46" r="18" fill="#f8b695"/>
+            <circle cx="48" cy="46" r="10" fill="#ff9ebc"/>
+            <circle cx="112" cy="46" r="18" fill="#f8b695"/>
+            <circle cx="112" cy="46" r="10" fill="#ff9ebc"/>
+            <!-- Round Chunky Body -->
+            <ellipse cx="80" cy="100" rx="44" ry="40" fill="url(#mascotBodyGrad)"/>
+            <!-- Cute Fruit Leaf Beret Hat -->
+            <ellipse cx="80" cy="44" rx="20" ry="8" fill="#ff6b8b"/>
+            <path d="M 80,44 C 84,30 96,32 94,22" stroke="#68c568" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <ellipse cx="94" cy="22" rx="8" ry="4" fill="#7ed57e" transform="rotate(-20 94 22)"/>
+            <!-- Head -->
+            <circle cx="80" cy="68" r="36" fill="url(#mascotBodyGrad)"/>
+            <!-- Cheeks -->
+            <circle cx="60" cy="74" r="7.5" fill="url(#peachCheek)" opacity="0.75"/>
+            <circle cx="100" cy="74" r="7.5" fill="url(#peachCheek)" opacity="0.75"/>
+            <!-- Expressive Eyes -->
+            <g id="mascot-eyes">
+              <ellipse cx="66" cy="62" rx="4.5" ry="6" fill="#4a2a3b"/>
+              <circle cx="68" cy="60" r="1.8" fill="#ffffff"/>
+              <ellipse cx="94" cy="62" rx="4.5" ry="6" fill="#4a2a3b"/>
+              <circle cx="96" cy="60" r="1.8" fill="#ffffff"/>
+            </g>
+            <!-- Cute Chunky Snout & Mouth -->
+            <ellipse cx="80" cy="72" rx="10" ry="7.5" fill="#ffffff" opacity="0.9"/>
+            <ellipse cx="80" cy="69" rx="3.5" ry="2.2" fill="#582a3a"/>
+            <path id="mascot-mouth" d="M 76,73 Q 80,77 84,73" stroke="#582a3a" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <!-- Paws -->
+            <ellipse cx="46" cy="102" rx="10" ry="12" fill="#fed6be" transform="rotate(20 46 102)"/>
+            <ellipse cx="114" cy="102" rx="10" ry="12" fill="#fed6be" transform="rotate(-20 114 102)"/>
+            <!-- Cute Feet -->
+            <ellipse cx="62" cy="138" rx="14" ry="9" fill="#f8b695"/>
+            <ellipse cx="98" cy="138" rx="14" ry="9" fill="#f8b695"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full max-w-md mt-2">
+        <button id="btn-start" onclick="openSessionSelect()" class="diorama-btn btn-pink py-3 px-5 sm:col-span-2 text-lg sm:text-xl font-extrabold flex items-center justify-center space-x-2">
+          <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
+          <span id="txt-btn-start">Mula Main</span>
+        </button>
+
+        <button onclick="showScreen('screen-instructions')" class="diorama-btn btn-butter py-2.5 px-3 text-sm sm:text-base font-extrabold flex items-center justify-center space-x-1.5">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          <span id="txt-btn-instructions">Cara Main</span>
+        </button>
+
+        <button onclick="showScreen('screen-collection')" class="diorama-btn btn-aqua py-2.5 px-3 text-sm sm:text-base font-extrabold flex items-center justify-center space-x-1.5">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+          <span id="txt-btn-collection">Koleksi</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 2: SESSION SELECTION (NO LEVELS)    -->
+    <!-- ========================================== -->
+    <section id="screen-session" class="w-full max-w-lg hidden flex-col items-center animate-fade-in py-3">
+      <div class="diorama-card p-5 w-full text-center mb-4">
+        <h2 id="session-title" class="text-2xl sm:text-3xl font-extrabold text-[#d83c74]">Pilih Permainan</h2>
+        <p id="session-desc" class="text-xs sm:text-sm font-bold text-[#945f78] mt-1">Berapa banyak cabaran buah mahu diteroka?</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 w-full">
+        <button onclick="startGame(5)" class="diorama-btn btn-pink py-4 px-3 flex flex-col items-center justify-center">
+          <span class="text-2xl font-black">5</span>
+          <span class="text-sm font-extrabold mt-1" id="txt-opt-5">5 Soalan</span>
+        </button>
+        <button onclick="startGame(10)" class="diorama-btn btn-peach py-4 px-3 flex flex-col items-center justify-center">
+          <span class="text-2xl font-black">10</span>
+          <span class="text-sm font-extrabold mt-1" id="txt-opt-10">10 Soalan</span>
+        </button>
+        <button onclick="startGame(15)" class="diorama-btn btn-lavender py-4 px-3 flex flex-col items-center justify-center">
+          <span class="text-2xl font-black">15</span>
+          <span class="text-sm font-extrabold mt-1" id="txt-opt-15">15 Soalan</span>
+        </button>
+        <button onclick="startGame(999)" class="diorama-btn btn-aqua py-4 px-3 flex flex-col items-center justify-center">
+          <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+          <span class="text-sm font-extrabold mt-1" id="txt-opt-free">Main Bebas</span>
+        </button>
+      </div>
+
+      <button onclick="showScreen('screen-home')" class="diorama-btn btn-butter py-2.5 px-6 font-extrabold mt-5 text-sm">
+        <span id="txt-session-back">Kembali</span>
+      </button>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 3: GAMEPLAY ARENA (VARIATIONS A-J)  -->
+    <!-- ========================================== -->
+    <section id="screen-gameplay" class="w-full max-w-3xl hidden flex-col items-center relative py-1">
+      <!-- Instruction & Prompt Bar with Mascot Reaction Face -->
+      <div class="diorama-card w-full p-3 sm:p-4 mb-2 flex items-center justify-between shadow-md relative z-20">
+        <div class="flex items-center space-x-3">
+          <!-- Mini Mascot Bubble -->
+          <div id="gameplay-mascot-thumb" class="w-12 h-12 flex-shrink-0 bg-[#ffe8f1] rounded-2xl border-2 border-[#ffb6d4] flex items-center justify-center">
+            <svg class="w-10 h-10" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="60" fill="#fed6be"/>
+              <circle cx="50" cy="45" r="16" fill="#f8b695"/>
+              <circle cx="110" cy="45" r="16" fill="#f8b695"/>
+              <circle cx="64" cy="74" r="5" fill="#4a2a3b"/>
+              <circle cx="96" cy="74" r="5" fill="#4a2a3b"/>
+              <circle cx="56" cy="84" r="6" fill="#ff7ca5" opacity="0.6"/>
+              <circle cx="104" cy="84" r="6" fill="#ff7ca5" opacity="0.6"/>
+              <ellipse cx="80" cy="86" rx="8" ry="6" fill="#fff"/>
+              <ellipse cx="80" cy="84" rx="3" ry="2" fill="#582a3a"/>
+              <path id="mascot-prompt-mouth" d="M 76,88 Q 80,92 84,88" stroke="#582a3a" stroke-width="2" fill="none"/>
+            </svg>
+          </div>
+          <div>
+            <h3 id="task-instruction-text" class="text-base sm:text-xl font-extrabold text-[#c72d67] leading-snug">
+              Cari bentuk bulatan!
+            </h3>
+            <p id="task-sub-hint" class="text-xs font-bold text-[#9f607c]">Tekan pada buah yang sepadan.</p>
+          </div>
+        </div>
+
+        <!-- Exit / Cancel Session Pill -->
+        <button onclick="confirmExitGame()" class="p-2 rounded-xl bg-[#fff0f6] border border-[#ffbad6] text-[#c72d67] hover:bg-[#ffe0ee] active:scale-90" aria-label="Exit Game">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+
+      <!-- Interactive Stage Board -->
+      <div id="game-stage-container" class="w-full relative min-h-[340px] sm:min-h-[410px] bg-white/85 backdrop-blur-md rounded-3xl border-4 border-[#ffd6e7] shadow-xl p-3 sm:p-5 flex flex-col items-center justify-center overflow-hidden">
+        <!-- Live SVG Overlay for Drag-to-Connect Line (Variation J & B) -->
+        <svg id="drag-svg-overlay" class="absolute inset-0 w-full h-full pointer-events-none z-30" style="display:none;">
+          <defs>
+            <filter id="lineGlow">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#ff4382" flood-opacity="0.4"/>
+            </filter>
+          </defs>
+          <g id="svg-permanent-lines"></g>
+          <path id="svg-active-drag-line" d="" stroke="#ff5c98" stroke-width="7" stroke-linecap="round" stroke-dasharray="10 6" fill="none" filter="url(#lineGlow)"/>
+        </svg>
+
+        <!-- Dynamic Game Content Injected Here by Game Engine -->
+        <div id="game-dynamic-content" class="w-full h-full flex flex-col items-center justify-center z-10">
+          <!-- Filled dynamically -->
+        </div>
+
+        <!-- Gentle Floating Feedback Toast -->
+        <div id="feedback-banner" class="absolute top-4 py-2 px-5 rounded-2xl font-extrabold text-sm sm:text-base border-2 shadow-lg transition-all duration-300 transform -translate-y-16 opacity-0 z-40 pointer-events-none">
+          Cuba lagi!
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 4: RESULT CELEBRATION SCREEN        -->
+    <!-- ========================================== -->
+    <section id="screen-result" class="w-full max-w-md hidden flex-col items-center text-center animate-fade-in py-3">
+      <div class="diorama-card p-6 w-full relative overflow-hidden">
+        <!-- Floating Animated Sparkles in Result -->
+        <div class="w-28 h-28 mx-auto mb-2 relative">
+          <svg class="w-full h-full anim-cheer" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="48" fill="#ffe299"/>
+            <circle cx="60" cy="60" r="38" fill="#ffd043"/>
+            <!-- Crown on star -->
+            <polygon points="60,20 68,36 86,38 72,50 76,68 60,58 44,68 48,50 34,38 52,36" fill="#fff" stroke="#ff8cb7" stroke-width="3"/>
+          </svg>
+        </div>
+
+        <h2 id="res-title" class="text-3xl font-black text-[#d83c74]">Hebat!</h2>
+        <p id="res-sub" class="text-sm font-extrabold text-[#9c597a] mb-4">Permainan Selesai!</p>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-3 gap-2 bg-[#fff2f8] p-3 rounded-2xl border-2 border-[#ffd4e5] mb-5">
+          <div class="flex flex-col">
+            <span id="lbl-res-score" class="text-[11px] font-bold text-[#9c597a]">Skor</span>
+            <span id="res-score-val" class="text-xl font-black text-[#ff4382]">50</span>
+          </div>
+          <div class="flex flex-col border-x border-[#ffbad6]">
+            <span id="lbl-res-correct" class="text-[11px] font-bold text-[#9c597a]">Jawapan Betul</span>
+            <span id="res-correct-val" class="text-xl font-black text-[#8552d4]">5</span>
+          </div>
+          <div class="flex flex-col">
+            <span id="lbl-res-acc" class="text-[11px] font-bold text-[#9c597a]">Ketepatan</span>
+            <span id="res-acc-val" class="text-xl font-black text-[#2bb49c]">100%</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col space-y-2.5">
+          <button onclick="restartGame()" class="diorama-btn btn-pink py-3 font-extrabold text-base flex items-center justify-center space-x-2">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+            <span id="txt-btn-playagain">Main Lagi</span>
+          </button>
+          <button onclick="showScreen('screen-home')" class="diorama-btn btn-butter py-2.5 font-extrabold text-sm">
+            <span id="txt-btn-menuback">Kembali ke Menu</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 5: INSTRUCTIONS (CARA MAIN)         -->
+    <!-- ========================================== -->
+    <section id="screen-instructions" class="w-full max-w-xl hidden flex-col items-center animate-fade-in py-2">
+      <div class="diorama-card p-5 w-full">
+        <h2 id="inst-title" class="text-2xl font-black text-[#d83c74] text-center mb-1">Cara Main</h2>
+        <p id="inst-desc" class="text-xs sm:text-sm font-bold text-[#945f78] text-center mb-4">
+          Cari, padankan dan kenal bentuk melalui buah-buahan!
+        </p>
+
+        <!-- Animated Mini Demonstration using real fruit and shape SVGs -->
+        <div class="bg-[#fff2f8] p-3 rounded-2xl border-2 border-[#ffcfe2] mb-4 flex items-center justify-around relative overflow-hidden h-36">
+          <!-- Animated Fruit Demo (Apple) -->
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 anim-float">
+              <svg viewBox="0 0 80 80" class="w-full h-full">
+                <circle cx="40" cy="45" r="26" fill="#ff4365"/>
+                <circle cx="34" cy="38" r="8" fill="#ff768e" opacity="0.6"/>
+                <path d="M 40,22 Q 44,14 40,10" stroke="#7ec480" stroke-width="4" stroke-linecap="round" fill="none"/>
+                <ellipse cx="48" cy="18" rx="8" ry="4" fill="#8edb90" transform="rotate(-25 48 18)"/>
+              </svg>
+            </div>
+            <span class="text-xs font-black text-[#ff4365] mt-1" id="demo-fruit-name">Epal</span>
+          </div>
+
+          <!-- Animated Hand Pointer Moving -->
+          <div class="anim-float" style="animation-duration: 2s;">
+            <svg class="w-10 h-10 text-[#d83c74]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 11.24V7.5a2.5 2.5 0 0 1 5 0v3.74c1.21-.81 2-2.18 2-3.74a4.5 4.5 0 0 0-9 0c0 1.56.79 2.93 2 3.74zM17.84 15.58l-3.37-6.02A1.99 1.99 0 0 0 12.73 8.5H12V7.5a2 2 0 0 0-4 0v9.76l-3.32-1.77a1.99 1.99 0 0 0-2.45.62l-.73.97 5.76 6.13c.66.7 1.57 1.1 2.53 1.1h6.47c1.78 0 3.25-1.33 3.44-3.1l.64-5.63a2.02 2.02 0 0 0-.5-1.5z"/>
+            </svg>
+          </div>
+
+          <!-- Animated Target Shape Demo (Circle) -->
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 flex items-center justify-center bg-white rounded-2xl border-3 border-dashed border-[#ff7aa7]">
+              <svg viewBox="0 0 60 60" class="w-12 h-12">
+                <circle cx="30" cy="30" r="22" fill="#ff7aa7"/>
+                <circle cx="26" cy="24" r="6" fill="#fff" opacity="0.6"/>
+              </svg>
+            </div>
+            <span class="text-xs font-black text-[#c72d67] mt-1" id="demo-shape-name">Bulatan</span>
+          </div>
+        </div>
+
+        <ul class="text-xs sm:text-sm font-bold text-[#8c5071] space-y-2 mb-4">
+          <li class="flex items-center space-x-2">
+            <span class="w-5 h-5 rounded-full bg-[#ff70a5] text-white flex items-center justify-center font-black text-xs flex-shrink-0">1</span>
+            <span id="inst-step-1">Lihat bentuk buah yang comel dan corak bayangnya.</span>
+          </li>
+          <li class="flex items-center space-x-2">
+            <span class="w-5 h-5 rounded-full bg-[#ffa266] text-white flex items-center justify-center font-black text-xs flex-shrink-0">2</span>
+            <span id="inst-step-2">Tekan atau tarik buah kepada bentuk yang sepadan.</span>
+          </li>
+          <li class="flex items-center space-x-2">
+            <span class="w-5 h-5 rounded-full bg-[#5ce4d3] text-[#044b42] flex items-center justify-center font-black text-xs flex-shrink-0">3</span>
+            <span id="inst-step-3">Dengar pujian daripada Bubu dan kumpul skor!</span>
+          </li>
+        </ul>
+
+        <button onclick="showScreen('screen-home')" class="diorama-btn btn-butter w-full py-2.5 font-extrabold text-sm">
+          <span id="txt-inst-back">Kembali</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 9: FRUIT & SHAPE COLLECTION         -->
+    <!-- ========================================== -->
+    <section id="screen-collection" class="w-full max-w-4xl hidden flex-col items-center animate-fade-in py-1">
+      <div class="diorama-card w-full p-4 mb-2 flex items-center justify-between">
+        <div>
+          <h2 id="coll-title" class="text-2xl font-black text-[#d83c74]">Koleksi</h2>
+          <p id="coll-sub" class="text-xs font-bold text-[#945f78]">Koleksi Buah & Bentuk Comel Kindy Klub</p>
+        </div>
+        <button onclick="showScreen('screen-home')" class="diorama-btn btn-butter py-1.5 px-4 font-extrabold text-xs">
+          <span id="txt-coll-back">Kembali</span>
+        </button>
+      </div>
+
+      <!-- Collection Cards Grid (NO total count displayed, NO emoji, real SVG art cards) -->
+      <div id="collection-grid" class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-[62vh] overflow-y-auto p-1">
+        <!-- Rendered dynamically from FRUIT_DATABASE -->
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="relative z-20 w-full py-2.5 text-center text-xs font-extrabold text-[#9a5b78] tracking-wider pointer-events-none">
+    Kinder Klub | All Rights Reserved
+  </footer>
+
+  <script>
+    /* Global Application State */
+    const STORAGE_KEY = 'kinderKlub_buahBentuk_playerProfile';
+    let currentLang = 'ms';
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    // Session game variables
+    let gameSessionLength = 5;
+    let currentGameIndex = 0;
+    let currentScore = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let currentTask = null;
+    let isTaskLocked = false;
+
+    // Active drag-to-connect state (Variation J)
+    let activeDragConnection = {
+      isDragging: false,
+      fruitId: null,
+      startX: 0,
+      startY: 0
+    };
+    let permanentConnections = [];
+
+    /* ========================================================= */
+    /* MASTER FRUIT & SHAPE ARTWORK REPOSITORY (No Emoji, Pure SVG) */
+    /* ========================================================= */
+    const SHAPES = {
+      circle: {
+        id: 'circle',
+        nameBM: 'Bulatan',
+        nameEN: 'Circle',
+        color: '#ff6b9d',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow">
+          <circle cx="50" cy="50" r="42" fill="#ff6b9d"/>
+          <circle cx="42" cy="40" r="10" fill="#fff" opacity="0.55"/>
+          <path d="M 20,50 A 30,30 0 0,0 80,50" stroke="#f03c78" stroke-width="4" fill="none" opacity="0.4"/>
+        </svg>`
+      },
+      triangle: {
+        id: 'triangle',
+        nameBM: 'Segi Tiga',
+        nameEN: 'Triangle',
+        color: '#ffba49',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow">
+          <polygon points="50,12 88,84 12,84" fill="#ffba49"/>
+          <polygon points="50,22 80,80 20,80" fill="#ffd57a" opacity="0.5"/>
+          <line x1="20" y1="84" x2="80" y2="84" stroke="#d49219" stroke-width="4" stroke-linecap="round"/>
+        </svg>`
+      },
+      square: {
+        id: 'square',
+        nameBM: 'Segi Empat Sama',
+        nameEN: 'Square',
+        color: '#5ee2d2',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow">
+          <rect x="15" y="15" width="70" height="70" rx="14" fill="#5ee2d2"/>
+          <rect x="22" y="22" width="56" height="56" rx="8" fill="#99f3e9" opacity="0.6"/>
+          <line x1="20" y1="82" x2="80" y2="82" stroke="#2ab5a4" stroke-width="4" stroke-linecap="round"/>
+        </svg>`
+      },
+      rectangle: {
+        id: 'rectangle',
+        nameBM: 'Segi Empat Tepat',
+        nameEN: 'Rectangle',
+        color: '#8ac926',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow">
+          <rect x="10" y="24" width="80" height="52" rx="12" fill="#8ac926"/>
+          <rect x="16" y="30" width="68" height="40" rx="8" fill="#b4e46a" opacity="0.6"/>
+          <line x1="16" y1="74" x2="84" y2="74" stroke="#689f15" stroke-width="4" stroke-linecap="round"/>
+        </svg>`
+      },
+      oval: {
+        id: 'oval',
+        nameBM: 'Bujur',
+        nameEN: 'Oval',
+        color: '#b78af7',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow">
+          <ellipse cx="50" cy="50" rx="42" ry="28" fill="#b78af7"/>
+          <ellipse cx="45" cy="44" rx="20" ry="10" fill="#d9bfff" opacity="0.6"/>
+          <path d="M 25,55 Q 50,75 75,55" stroke="#905bd8" stroke-width="4" fill="none" opacity="0.5"/>
+        </svg>`
+      },
+      star: {
+        id: 'star',
+        nameBM: 'Bintang',
+        nameEN: 'Star',
+        color: '#ffd033',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow">
+          <polygon points="50,8 62,34 92,36 68,56 76,86 50,70 24,86 32,56 8,36 38,34" fill="#ffd033"/>
+          <polygon points="50,18 60,37 82,39 64,53 70,76 50,64 30,76 36,53 18,39 40,37" fill="#ffe785" opacity="0.6"/>
+        </svg>`
+      },
+      heart: {
+        id: 'heart',
+        nameBM: 'Hati',
+        nameEN: 'Heart',
+        color: '#ff4d6d',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow">
+          <path d="M 50,86 C 20,62 10,44 10,28 C 10,14 20,6 34,6 C 42,6 47,10 50,16 C 53,10 58,6 66,6 C 80,6 90,14 90,28 C 90,44 80,62 50,86 Z" fill="#ff4d6d"/>
+          <circle cx="32" cy="24" r="8" fill="#fff" opacity="0.5"/>
+        </svg>`
+      }
+    };
+
+    const FRUITS = [
+      {
+        id: 'apple',
+        nameBM: 'Epal',
+        nameEN: 'Apple',
+        shape: 'circle',
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full">
+          <ellipse cx="60" cy="110" rx="36" ry="6" fill="#be6a85" opacity="0.3"/>
+          <path d="M 60,34 C 40,34 22,46 22,72 C 22,98 42,106 60,106 C 78,106 98,98 98,72 C 98,46 80,34 60,34 Z" fill="#ff385c"/>
+          <ellipse cx="44" cy="55" rx="14" ry="18" fill="#ff6b87" opacity="0.7"/>
+          <circle cx="40" cy="50" r="5" fill="#fff" opacity="0.8"/>
+          <!-- Stem & Leaf -->
+          <path d="M 60,35 Q 64,18 56,12" stroke="#689f38" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <path d="M 60,26 C 74,18 82,24 82,30 C 82,36 70,34 60,26 Z" fill="#8bc34a"/>
+        </svg>`
+      },
+      {
+        id: 'orange',
+        nameBM: 'Oren',
+        nameEN: 'Orange',
+        shape: 'circle',
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full">
+          <ellipse cx="60" cy="110" rx="36" ry="6" fill="#be6a85" opacity="0.3"/>
+          <circle cx="60" cy="68" r="40" fill="#ff9015"/>
+          <circle cx="60" cy="68" r="34" fill="#ffa73d" opacity="0.8"/>
+          <circle cx="46" cy="50" r="8" fill="#fff" opacity="0.6"/>
+          <!-- Dimples & Small Leaf -->
+          <circle cx="78" cy="74" r="2.5" fill="#e67300" opacity="0.6"/>
+          <circle cx="64" cy="88" r="2.5" fill="#e67300" opacity="0.6"/>
+          <ellipse cx="60" cy="27" rx="8" ry="4" fill="#7cb342" transform="rotate(-15 60 27)"/>
+        </svg>`
+      },
+      {
+        id: 'watermelon',
+        nameBM: 'Tembikai',
+        nameEN: 'Watermelon',
+        shape: 'triangle',
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full">
+          <ellipse cx="60" cy="112" rx="42" ry="6" fill="#be6a85" opacity="0.3"/>
+          <!-- Curved Triangle Melon Slice -->
+          <path d="M 60,18 L 104,96 C 85,104 35,104 16,96 Z" fill="#4caf50"/>
+          <path d="M 60,24 L 98,92 C 82,98 38,98 22,92 Z" fill="#c8e6c9"/>
+          <path d="M 60,30 L 92,88 C 78,94 42,94 28,88 Z" fill="#ff3b56"/>
+          <!-- Seeds -->
+          <ellipse cx="60" cy="50" rx="2.5" ry="4" fill="#3e2723"/>
+          <ellipse cx="50" cy="68" rx="2.5" ry="4" fill="#3e2723"/>
+          <ellipse cx="70" cy="68" rx="2.5" ry="4" fill="#3e2723"/>
+          <circle cx="48" cy="40" r="4" fill="#fff" opacity="0.5"/>
+        </svg>`
+      },
+      {
+        id: 'starfruit',
+        nameBM: 'Belimbing',
+        nameEN: 'Starfruit',
+        shape: 'star',
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full">
+          <ellipse cx="60" cy="110" rx="38" ry="6" fill="#be6a85" opacity="0.3"/>
+          <!-- Star Cross Section -->
+          <polygon points="60,16 73,46 106,50 80,74 88,106 60,88 32,106 40,74 14,50 47,46" fill="#fbc02d"/>
+          <polygon points="60,24 70,48 96,52 76,70 82,96 60,82 38,96 44,70 24,52 50,48" fill="#fff176"/>
+          <circle cx="60" cy="64" r="5" fill="#f57f17"/>
+          <circle cx="52" cy="54" r="3" fill="#fff" opacity="0.8"/>
+        </svg>`
+      },
+      {
+        id: 'mango',
+        nameBM: 'Mangga',
+        nameEN: 'Mango',
+        shape: 'oval',
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full">
+          <ellipse cx="60" cy="110" rx="35" ry="6" fill="#be6a85" opacity="0.3"/>
+          <!-- Chunky Oval Kidney Silhouette -->
+          <path d="M 52,24 C 78,22 96,44 94,76 C 92,102 64,106 48,96 C 30,84 28,52 42,32 Z" fill="#ffb300"/>
+          <path d="M 56,30 C 76,28 88,48 86,72 C 84,94 62,98 50,90 Z" fill="#ffd54f" opacity="0.7"/>
+          <circle cx="48" cy="44" r="6" fill="#fff" opacity="0.7"/>
+          <ellipse cx="56" cy="20" rx="8" ry="4" fill="#689f38" transform="rotate(-30 56 20)"/>
+        </svg>`
+      },
+      {
+        id: 'strawberry',
+        nameBM: 'Strawberi',
+        nameEN: 'Strawberry',
+        shape: 'heart',
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full">
+          <ellipse cx="60" cy="112" rx="36" ry="6" fill="#be6a85" opacity="0.3"/>
+          <!-- Heart / Rounded Triangle Berry -->
+          <path d="M 60,104 C 36,90 24,68 24,48 C 24,34 38,26 50,32 C 55,35 58,40 60,44 C 62,40 65,35 70,32 C 82,26 96,34 96,48 C 96,68 84,90 60,104 Z" fill="#ff2d55"/>
+          <ellipse cx="44" cy="46" rx="8" ry="12" fill="#ff6b87" opacity="0.6"/>
+          <circle cx="42" cy="42" r="4" fill="#fff" opacity="0.8"/>
+          <!-- Calyx Top -->
+          <polygon points="60,34 50,22 60,26 70,22" fill="#4caf50"/>
+          <ellipse cx="60" cy="20" rx="14" ry="5" fill="#66bb6a"/>
+          <!-- Seeds -->
+          <ellipse cx="46" cy="62" rx="2" ry="3" fill="#ffe082"/>
+          <ellipse cx="64" cy="64" rx="2" ry="3" fill="#ffe082"/>
+          <ellipse cx="54" cy="78" rx="2" ry="3" fill="#ffe082"/>
+          <ellipse cx="72" cy="78" rx="2" ry="3" fill="#ffe082"/>
+        </svg>`
+      },
+      {
+        id: 'square_melon',
+        nameBM: 'Hirisan Tembikai',
+        nameEN: 'Square Watermelon Slice',
+        shape: 'square',
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full">
+          <ellipse cx="60" cy="110" rx="38" ry="6" fill="#be6a85" opacity="0.3"/>
+          <!-- Square Slice Outer Rind Base -->
+          <rect x="25" y="25" width="70" height="70" rx="14" fill="#2e7d32"/>
+          <rect x="25" y="25" width="70" height="62" rx="14" fill="#43a047"/>
+          <!-- White/Light Green Rind Trim -->
+          <rect x="28" y="28" width="64" height="57" rx="12" fill="#e8f5e9"/>
+          <!-- Red Juicy Watermelon Flesh -->
+          <rect x="30" y="30" width="60" height="52" rx="10" fill="#ff385c"/>
+          <rect x="32" y="32" width="56" height="48" rx="8" fill="#ff4d6d"/>
+          <!-- Dark green rind stripes at bottom base -->
+          <rect x="36" y="85" width="7" height="10" rx="2" fill="#1b5e20"/>
+          <rect x="56" y="85" width="8" height="10" rx="2" fill="#1b5e20"/>
+          <rect x="77" y="85" width="7" height="10" rx="2" fill="#1b5e20"/>
+          <!-- Watermelon Seeds -->
+          <ellipse cx="45" cy="46" rx="2.5" ry="4.2" fill="#381e19" transform="rotate(-15 45 46)"/>
+          <ellipse cx="75" cy="46" rx="2.5" ry="4.2" fill="#381e19" transform="rotate(15 75 46)"/>
+          <ellipse cx="60" cy="56" rx="2.5" ry="4.2" fill="#381e19"/>
+          <ellipse cx="48" cy="68" rx="2.2" ry="3.8" fill="#381e19" transform="rotate(12 48 68)"/>
+          <ellipse cx="72" cy="68" rx="2.2" ry="3.8" fill="#381e19" transform="rotate(-12 72 68)"/>
+          <!-- Cute Juicy Highlights -->
+          <rect x="34" y="34" width="16" height="6" rx="3" fill="#ffffff" opacity="0.75"/>
+          <circle cx="38" cy="45" r="2.8" fill="#ffffff" opacity="0.6"/>
+        </svg>`
+      },
+      {
+        id: 'pineapple_slice',
+        nameBM: 'Nenas',
+        nameEN: 'Pineapple',
+        shape: 'rectangle',
+        svg: `<svg viewBox="0 0 120 120" class="w-full h-full">
+          <ellipse cx="60" cy="110" rx="42" ry="6" fill="#be6a85" opacity="0.3"/>
+          <!-- Rectangular Thick Cut -->
+          <rect x="18" y="38" width="84" height="54" rx="12" fill="#fbc02d"/>
+          <rect x="24" y="44" width="72" height="42" rx="8" fill="#ffee58"/>
+          <!-- Cut segments texture -->
+          <circle cx="42" cy="65" r="8" fill="#f57f17" opacity="0.5"/>
+          <circle cx="60" cy="65" r="8" fill="#f57f17" opacity="0.5"/>
+          <circle cx="78" cy="65" r="8" fill="#f57f17" opacity="0.5"/>
+          <rect x="32" y="50" width="16" height="6" rx="3" fill="#fff" opacity="0.6"/>
+        </svg>`
+      }
+    ];
+
+    function initAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.2, gainPeak = 0.25) {
+      if (!soundEnabled) return;
+      try {
+        initAudioContext();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(gainPeak, audioCtx.currentTime + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        // AudioContext fallback
+      }
+    }
+
+    function soundSuccess() {
+      if (!soundEnabled) return;
+      // Cheerful melodic 3-tone arpeggio (C5 -> E5 -> G5)
+      setTimeout(() => playTone(523.25, 'triangle', 0.15, 0.2), 0);
+      setTimeout(() => playTone(659.25, 'triangle', 0.18, 0.25), 110);
+      setTimeout(() => playTone(783.99, 'sine', 0.35, 0.3), 220);
+    }
+
+    function soundGentleWobble() {
+      if (!soundEnabled) return;
+      // Soft gentle wobble thud
+      playTone(220, 'sine', 0.18, 0.15);
+      setTimeout(() => playTone(185, 'sine', 0.22, 0.12), 80);
+    }
+
+    function soundClick() {
+      playTone(480, 'sine', 0.07, 0.12);
+    }
+
+    const I18N = {
+      ms: {
+        brandTitle: "Buah & Bentuk",
+        brandSub: "Kindy Klub",
+        homeTitle: "Buah & Bentuk",
+        homeSub: "Jom teroka dunia buah dan bentuk yang comel!",
+        btnStart: "Mula Main",
+        btnInstructions: "Cara Main",
+        btnCollection: "Koleksi",
+        sessionTitle: "Pilih Permainan",
+        sessionDesc: "Berapa banyak cabaran buah mahu diteroka?",
+        opt5: "5 Soalan",
+        opt10: "10 Soalan",
+        opt15: "15 Soalan",
+        optFree: "Main Bebas",
+        sessionBack: "Kembali",
+        scoreLabel: "Skor:",
+        taskLabel: "Soalan:",
+        tryAgain: "Cuba lagi!",
+        correctMsg: "Hebat! Tepat sekali!",
+        resTitle: "Hebat!",
+        resSub: "Permainan Selesai!",
+        resScore: "Skor",
+        resCorrect: "Jawapan Betul",
+        resAcc: "Ketepatan",
+        btnPlayAgain: "Main Lagi",
+        btnMenuBack: "Kembali ke Menu",
+        instTitle: "Cara Main",
+        instDesc: "Cari, padankan dan kenal bentuk melalui buah-buahan!",
+        instStep1: "Lihat bentuk buah yang comel dan corak bayangnya.",
+        instStep2: "Tekan atau tarik buah kepada bentuk yang sepadan.",
+        instStep3: "Dengar pujian daripada Bubu dan kumpul skor!",
+        instBack: "Kembali",
+        collTitle: "Koleksi",
+        collSub: "Koleksi Buah & Bentuk Comel Kindy Klub",
+        collBack: "Kembali",
+        dragHint: "Tarik buah ke bentuknya!",
+        tapHint: "Tekan jawapan yang betul!"
+      },
+      en: {
+        brandTitle: "Fruit Shape Adventure",
+        brandSub: "Kindy Klub",
+        homeTitle: "Fruit Shape Adventure",
+        homeSub: "Let's explore a cute world of fruits and shapes!",
+        btnStart: "Start Playing",
+        btnInstructions: "How to Play",
+        btnCollection: "Collection",
+        sessionTitle: "Choose a Game",
+        sessionDesc: "How many fruit challenges to explore?",
+        opt5: "5 Questions",
+        opt10: "10 Questions",
+        opt15: "15 Questions",
+        optFree: "Free Play",
+        sessionBack: "Back",
+        scoreLabel: "Score:",
+        taskLabel: "Task:",
+        tryAgain: "Try again!",
+        correctMsg: "Great Job! Well done!",
+        resTitle: "Great Job!",
+        resSub: "Game Complete!",
+        resScore: "Score",
+        resCorrect: "Correct Answers",
+        resAcc: "Accuracy",
+        btnPlayAgain: "Play Again",
+        btnMenuBack: "Back to Menu",
+        instTitle: "How to Play",
+        instDesc: "Find, match and discover shapes through fruits!",
+        instStep1: "Inspect the cute fruit shapes and silhouettes.",
+        instStep2: "Tap or drag the fruit to its matching shape.",
+        instStep3: "Celebrate with Bubu and collect your score!",
+        instBack: "Back",
+        collTitle: "Collection",
+        collSub: "Kindy Klub Cute Fruit & Shape Collection",
+        collBack: "Back",
+        dragHint: "Drag the fruit to its shape!",
+        tapHint: "Tap the correct match!"
+      }
+    };
+
+    function loadSavedData() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          return JSON.parse(raw);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      return {
+        lang: 'ms'
+      };
+    }
+
+    function saveProfileData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    /* Update Language System */
+    function setLanguage(lang) {
+      currentLang = lang;
+      const dict = I18N[lang];
+
+      // Update Header & Brand
+      document.getElementById('nav-brand-title').textContent = dict.brandTitle;
+      document.getElementById('nav-brand-sub').textContent = dict.brandSub;
+      document.getElementById('lbl-score').textContent = dict.scoreLabel;
+      document.getElementById('lbl-task').textContent = dict.taskLabel;
+
+      // Update Home Screen
+      document.getElementById('home-title').textContent = dict.homeTitle;
+      document.getElementById('home-subtitle').textContent = dict.homeSub;
+      document.getElementById('txt-btn-start').textContent = dict.btnStart;
+      document.getElementById('txt-btn-instructions').textContent = dict.btnInstructions;
+      document.getElementById('txt-btn-collection').textContent = dict.btnCollection;
+
+      // Update Session Select Screen
+      document.getElementById('session-title').textContent = dict.sessionTitle;
+      document.getElementById('session-desc').textContent = dict.sessionDesc;
+      document.getElementById('txt-opt-5').textContent = dict.opt5;
+      document.getElementById('txt-opt-10').textContent = dict.opt10;
+      document.getElementById('txt-opt-15').textContent = dict.opt15;
+      document.getElementById('txt-opt-free').textContent = dict.optFree;
+      document.getElementById('txt-session-back').textContent = dict.sessionBack;
+
+      // Update Instructions Screen
+      document.getElementById('inst-title').textContent = dict.instTitle;
+      document.getElementById('inst-desc').textContent = dict.instDesc;
+      document.getElementById('inst-step-1').textContent = dict.instStep1;
+      document.getElementById('inst-step-2').textContent = dict.instStep2;
+      document.getElementById('inst-step-3').textContent = dict.instStep3;
+      document.getElementById('txt-inst-back').textContent = dict.instBack;
+      document.getElementById('demo-fruit-name').textContent = lang === 'ms' ? 'Epal' : 'Apple';
+      document.getElementById('demo-shape-name').textContent = lang === 'ms' ? 'Bulatan' : 'Circle';
+
+      // Update Result Screen
+      document.getElementById('res-title').textContent = dict.resTitle;
+      document.getElementById('res-sub').textContent = dict.resSub;
+      document.getElementById('lbl-res-score').textContent = dict.resScore;
+      document.getElementById('lbl-res-correct').textContent = dict.resCorrect;
+      document.getElementById('lbl-res-acc').textContent = dict.resAcc;
+      document.getElementById('txt-btn-playagain').textContent = dict.btnPlayAgain;
+      document.getElementById('txt-btn-menuback').textContent = dict.btnMenuBack;
+
+      // Update Collection Screen
+      document.getElementById('coll-title').textContent = dict.collTitle;
+      document.getElementById('coll-sub').textContent = dict.collSub;
+      document.getElementById('txt-coll-back').textContent = dict.collBack;
+
+      // Toggle UI button styles
+      if (lang === 'ms') {
+        document.getElementById('lang-bm').className = "px-2.5 py-1 text-xs font-black rounded-full transition-all bg-[#ff6b9d] text-white";
+        document.getElementById('lang-en').className = "px-2.5 py-1 text-xs font-black rounded-full transition-all text-[#ba7b97] hover:text-[#ff6b9d]";
+      } else {
+        document.getElementById('lang-en').className = "px-2.5 py-1 text-xs font-black rounded-full transition-all bg-[#ff6b9d] text-white";
+        document.getElementById('lang-bm').className = "px-2.5 py-1 text-xs font-black rounded-full transition-all text-[#ba7b97] hover:text-[#ff6b9d]";
+      }
+
+      // Re-render Collection to update language names
+      renderCollection();
+
+      // If active task, refresh prompt text
+      if (currentTask) {
+        updateTaskPromptText();
+      }
+
+      const prof = loadSavedData();
+      prof.lang = lang;
+      saveProfileData(prof);
+    }
+
+    function showScreen(screenId) {
+      soundClick();
+      const screens = [
+        'screen-home',
+        'screen-session',
+        'screen-gameplay',
+        'screen-result',
+        'screen-instructions',
+        'screen-collection'
+      ];
+      screens.forEach(s => {
+        const el = document.getElementById(s);
+        if (el) el.classList.add('hidden');
+      });
+
+      const target = document.getElementById(screenId);
+      if (target) target.classList.remove('hidden');
+
+      const statsBar = document.getElementById('header-stats');
+      if (screenId === 'screen-gameplay') {
+        statsBar.classList.remove('hidden');
+        statsBar.classList.add('flex');
+      } else {
+        statsBar.classList.remove('flex');
+        statsBar.classList.add('hidden');
+      }
+
+      if (screenId === 'screen-collection') renderCollection();
+    }
+
+    function openSessionSelect() {
+      showScreen('screen-session');
+    }
+
+    function triggerMascotCheer() {
+      soundSuccess();
+      const mascot = document.getElementById('mascot-body-group');
+      if (mascot) {
+        mascot.classList.remove('anim-cheer');
+        void mascot.offsetWidth;
+        mascot.classList.add('anim-cheer');
+      }
+    }
+
+    function renderCollection() {
+      const grid = document.getElementById('collection-grid');
+      grid.innerHTML = FRUITS.map(fruit => {
+        const shp = SHAPES[fruit.shape];
+        const fName = currentLang === 'ms' ? fruit.nameBM : fruit.nameEN;
+        const sName = currentLang === 'ms' ? shp.nameBM : shp.nameEN;
+        return `
+          <div class="diorama-card p-3 flex flex-col items-center text-center transform hover:scale-105 transition-all">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 p-1 flex items-center justify-center">
+              ${fruit.svg}
+            </div>
+            <h4 class="text-sm font-black text-[#d83c74] mt-2">${fName}</h4>
+            <div class="flex items-center space-x-1.5 mt-1 bg-[#fff0f6] px-2.5 py-1 rounded-full border border-[#ffcfe2]">
+              <div class="w-4 h-4">${shp.svg}</div>
+              <span class="text-[11px] font-extrabold text-[#7442d4]">${sName}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function startGame(numQuestions) {
+      soundClick();
+      gameSessionLength = numQuestions;
+      currentGameIndex = 0;
+      currentScore = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      permanentConnections = [];
+
+      document.getElementById('stat-score-val').textContent = currentScore;
+      document.getElementById('stat-task-val').textContent = `${currentGameIndex + 1}/${gameSessionLength === 999 ? '∞' : gameSessionLength}`;
+
+      showScreen('screen-gameplay');
+      generateNextTask();
+    }
+
+    function restartGame() {
+      startGame(gameSessionLength);
+    }
+
+    function confirmExitGame() {
+      soundClick();
+      showScreen('screen-home');
+    }
+
+    /* Dynamic Random Task Generation with Variations A through J */
+    function generateNextTask() {
+      isTaskLocked = false;
+      permanentConnections = [];
+      const svgLineGroup = document.getElementById('svg-permanent-lines');
+      if (svgLineGroup) svgLineGroup.innerHTML = '';
+
+      // Check session completion
+      if (gameSessionLength !== 999 && currentGameIndex >= gameSessionLength) {
+        finishGameSession();
+        return;
+      }
+
+      document.getElementById('stat-task-val').textContent = `${currentGameIndex + 1}/${gameSessionLength === 999 ? '∞' : gameSessionLength}`;
+
+      // Pick a variation randomly among:
+      // A (Cari Bentuk), B (Padankan Buah), C (Siluet Buah), D (Pilih Bentuk), E (Susun Bentuk),
+      // F (Cari Semua), G (Bentuk Mana Hilang), H (Dunia Buah), J (Drag-to-Connect Mandatory)
+      const variations = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J'];
+      const chosenVar = variations[Math.floor(Math.random() * variations.length)];
+
+      // Pick target fruit and shape
+      const shuffledFruits = [...FRUITS].sort(() => 0.5 - Math.random());
+      const targetFruit = shuffledFruits[0];
+      const targetShape = SHAPES[targetFruit.shape];
+
+      currentTask = {
+        type: chosenVar,
+        targetFruit: targetFruit,
+        targetShape: targetShape,
+        shuffledFruits: shuffledFruits
+      };
+
+      updateTaskPromptText();
+      renderCurrentVariation();
+    }
+
+    /* Update Prompt & Instruction Text depending on active language & mode */
+    function updateTaskPromptText() {
+      if (!currentTask) return;
+      const t = currentTask;
+      const instTitle = document.getElementById('task-instruction-text');
+      const instSub = document.getElementById('task-sub-hint');
+      const sName = currentLang === 'ms' ? t.targetShape.nameBM : t.targetShape.nameEN;
+      const fName = currentLang === 'ms' ? t.targetFruit.nameBM : t.targetFruit.nameEN;
+
+      switch (t.type) {
+        case 'A':
+          instTitle.textContent = currentLang === 'ms' ? `Cari bentuk ${sName}!` : `Find the ${sName}!`;
+          instSub.textContent = currentLang === 'ms' ? 'Tekan pada buah yang sepadan.' : 'Tap the matching fruit.';
+          break;
+        case 'B':
+          instTitle.textContent = currentLang === 'ms' ? `Padankan ${fName} dengan bentuknya!` : `Match ${fName} to its shape!`;
+          instSub.textContent = currentLang === 'ms' ? 'Tarik buah ke bentuknya atau tekan bentuk yang betul.' : 'Drag fruit to shape or tap the shape.';
+          break;
+        case 'C':
+          instTitle.textContent = currentLang === 'ms' ? `Buah mana berbentuk ${sName}?` : `Which fruit is shaped like a ${sName}?`;
+          instSub.textContent = currentLang === 'ms' ? 'Lihat bayang dan bentuk buah.' : 'Inspect the silhouettes.';
+          break;
+        case 'D':
+          instTitle.textContent = currentLang === 'ms' ? `Pilih bentuk bagi ${fName}!` : `Pick the shape of ${fName}!`;
+          instSub.textContent = currentLang === 'ms' ? 'Tekan bentuk yang sepadan di bawah.' : 'Tap the matching shape below.';
+          break;
+        case 'E':
+          instTitle.textContent = currentLang === 'ms' ? `Susun buah ikut bentuk ${sName}!` : `Sort fruit into the ${sName} basket!`;
+          instSub.textContent = currentLang === 'ms' ? 'Tarik buah ke dalam bakul yang betul.' : 'Drag the fruit into the matching basket.';
+          break;
+        case 'F':
+          instTitle.textContent = currentLang === 'ms' ? `Cari semua buah berbentuk ${sName}!` : `Find all ${sName} fruits!`;
+          instSub.textContent = currentLang === 'ms' ? 'Tekan buah-buah tersebut dalam bakul.' : 'Tap the matching fruits in the basket.';
+          break;
+        case 'G':
+          instTitle.textContent = currentLang === 'ms' ? 'Bentuk mana yang hilang?' : 'Which shape is missing?';
+          instSub.textContent = currentLang === 'ms' ? 'Lengkapkan urutan corak bentuk.' : 'Complete the shape pattern sequence.';
+          break;
+        case 'H':
+          instTitle.textContent = currentLang === 'ms' ? `Cari buah berbentuk ${sName} di gerai!` : `Find the ${sName} fruit at the stall!`;
+          instSub.textContent = currentLang === 'ms' ? 'Tekan buah di atas meja gerai.' : 'Tap the fruit on the stall counter.';
+          break;
+        case 'J':
+        default:
+          instTitle.textContent = currentLang === 'ms' ? 'Sambungkan buah dengan bentuknya!' : 'Connect fruits with their shapes!';
+          instSub.textContent = currentLang === 'ms' ? 'Tarik garisan comel dari buah ke bentuk.' : 'Drag a candy line from fruit to shape.';
+          break;
+      }
+    }
+
+    function renderCurrentVariation() {
+      const container = document.getElementById('game-dynamic-content');
+      const dragOverlay = document.getElementById('drag-svg-overlay');
+      dragOverlay.style.display = 'none';
+      container.innerHTML = '';
+
+      const t = currentTask;
+
+      /* VARIATION A: Cari Bentuk (Tap the matching fruit) */
+      if (t.type === 'A') {
+        const options = [t.targetFruit];
+        const distractors = FRUITS.filter(f => f.shape !== t.targetFruit.shape).sort(() => 0.5 - Math.random()).slice(0, 2);
+        options.push(...distractors);
+        options.sort(() => 0.5 - Math.random());
+
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center w-full">
+            <div class="w-20 h-20 mb-4 anim-float p-1 bg-white rounded-3xl border-3 border-[#ffb6d4] shadow-md flex items-center justify-center">
+              ${t.targetShape.svg}
+            </div>
+            <div class="grid grid-cols-3 gap-3 sm:gap-6 w-full max-w-lg">
+              ${options.map(fruit => `
+                <button onclick="handleOptionTap('${fruit.id}', '${t.targetFruit.id}')" class="diorama-btn bg-white/95 p-3 sm:p-4 rounded-3xl flex flex-col items-center justify-center border-3 border-[#ffd0e2] hover:scale-105 active:scale-95 transition-all">
+                  <div class="w-16 h-16 sm:w-20 sm:h-20">${fruit.svg}</div>
+                  <span class="text-xs sm:text-sm font-extrabold text-[#d83c74] mt-2">${currentLang === 'ms' ? fruit.nameBM : fruit.nameEN}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      /* VARIATION B: Padankan Buah Dengan Bentuk (Drag to Target) */
+      else if (t.type === 'B') {
+        const targetShp = t.targetShape;
+        const otherShp = Object.values(SHAPES).filter(s => s.id !== targetShp.id).sort(() => 0.5 - Math.random())[0];
+        const shapesPool = [targetShp, otherShp].sort(() => 0.5 - Math.random());
+
+        container.innerHTML = `
+          <div class="flex flex-col sm:flex-row items-center justify-around w-full max-w-lg py-2 select-none relative">
+            <!-- Draggable Fruit with Mobile Touch Pointer Support -->
+            <div id="drag-source-fruit" data-fruit="${t.targetFruit.id}"
+              class="w-24 h-24 sm:w-28 sm:h-28 diorama-card p-2 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing hover:scale-105 transition-transform z-30 select-none touch-none"
+              onpointerdown="initFruitDrag(event, '${t.targetFruit.id}', '${targetShp.id}')">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 pointer-events-none">${t.targetFruit.svg}</div>
+              <span class="text-xs font-black text-[#d83c74] text-center w-full leading-tight px-1 pointer-events-none">${currentLang === 'ms' ? t.targetFruit.nameBM : t.targetFruit.nameEN}</span>
+            </div>
+
+            <!-- Arrow Indicator -->
+            <div class="text-[#ff90bc] my-2 sm:my-0 pointer-events-none">
+              <svg class="w-8 h-8 rotate-90 sm:rotate-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+            </div>
+
+            <!-- Shape Drop Targets (Boleh ditarik atau terus ditekan) -->
+            <div class="flex sm:flex-col space-x-3 sm:space-x-0 sm:space-y-3 z-10">
+              ${shapesPool.map(shp => `
+                <div id="drop-target-${shp.id}" data-shape-target="${shp.id}"
+                  onclick="handleShapeTargetTap('${shp.id}', '${targetShp.id}')"
+                  class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white/95 border-3 border-dashed border-[#ff9ec8] p-2 flex flex-col items-center justify-center transition-all cursor-pointer hover:bg-[#fff0f6] active:scale-95 shadow-sm">
+                  <div class="w-12 h-12 pointer-events-none">${shp.svg}</div>
+                  <span class="text-xs font-black text-[#7442d4] mt-1 text-center w-full leading-tight px-1 pointer-events-none">${currentLang === 'ms' ? shp.nameBM : shp.nameEN}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      /* VARIATION C: Buah Mana Berbentuk Segi Tiga? (Silhouette / Visual recognition) */
+      else if (t.type === 'C') {
+        const options = [t.targetFruit];
+        const distractors = FRUITS.filter(f => f.shape !== t.targetFruit.shape).sort(() => 0.5 - Math.random()).slice(0, 2);
+        options.push(...distractors);
+        options.sort(() => 0.5 - Math.random());
+
+        container.innerHTML = `
+          <div class="flex flex-col items-center w-full max-w-lg">
+            <div class="bg-[#fff0f6] px-4 py-1.5 rounded-full border border-[#ffbad6] mb-4 flex items-center space-x-2">
+              <div class="w-6 h-6">${t.targetShape.svg}</div>
+              <span class="text-sm font-extrabold text-[#7442d4]">${currentLang === 'ms' ? t.targetShape.nameBM : t.targetShape.nameEN}</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3 w-full">
+              ${options.map(fruit => `
+                <button onclick="handleOptionTap('${fruit.id}', '${t.targetFruit.id}')" class="diorama-btn bg-white/95 p-3 rounded-3xl flex flex-col items-center justify-center border-3 border-[#ffd0e2] hover:scale-105 active:scale-95 transition-all">
+                  <div class="w-16 h-16 sm:w-20 sm:h-20">${fruit.svg}</div>
+                  <span class="text-xs sm:text-sm font-extrabold text-[#d83c74] mt-2">${currentLang === 'ms' ? fruit.nameBM : fruit.nameEN}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      /* VARIATION D: Pilih Bentuk Yang Betul (Inspect Fruit, pick shape silhouette) */
+      else if (t.type === 'D') {
+        const targetShp = t.targetShape;
+        const otherShapes = Object.values(SHAPES).filter(s => s.id !== targetShp.id).sort(() => 0.5 - Math.random()).slice(0, 2);
+        const options = [targetShp, ...otherShapes].sort(() => 0.5 - Math.random());
+
+        container.innerHTML = `
+          <div class="flex flex-col items-center w-full max-w-md">
+            <div class="diorama-card p-3 mb-4 flex flex-col items-center anim-float">
+              <div class="w-24 h-24 sm:w-28 sm:h-28">${t.targetFruit.svg}</div>
+              <span class="text-sm font-black text-[#d83c74] mt-1 text-center">${currentLang === 'ms' ? t.targetFruit.nameBM : t.targetFruit.nameEN}</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3 w-full">
+              ${options.map(shp => `
+                <button onclick="handleShapeTap('${shp.id}', '${targetShp.id}')" class="diorama-btn bg-white p-3 rounded-3xl flex flex-col items-center justify-center border-3 border-[#ffd0e2] hover:scale-105 active:scale-95 transition-all">
+                  <div class="w-14 h-14">${shp.svg}</div>
+                  <span class="text-xs font-black text-[#7442d4] mt-1 text-center w-full leading-tight px-1">${currentLang === 'ms' ? shp.nameBM : shp.nameEN}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      /* VARIATION E: Susun Ikut Bentuk (Generous Drop Zone Sorting) */
+      else if (t.type === 'E') {
+        const correctFruit = t.targetFruit;
+        const otherFruit = FRUITS.filter(f => f.shape !== correctFruit.shape).sort(() => 0.5 - Math.random())[0];
+        const pool = [correctFruit, otherFruit].sort(() => 0.5 - Math.random());
+
+        container.innerHTML = `
+          <div class="flex flex-col items-center w-full max-w-lg select-none">
+            <div class="flex space-x-6 mb-4">
+              ${pool.map(f => `
+                <div id="drag-item-${f.id}" data-fruit="${f.id}"
+                  onpointerdown="initBasketFruitDrag(event, '${f.id}', '${correctFruit.id}')"
+                  onclick="handleSortTap('${f.id}', '${correctFruit.id}')"
+                  class="diorama-card p-2 w-20 h-20 sm:w-24 sm:h-24 flex flex-col items-center justify-center cursor-pointer hover:scale-105 active:scale-95 transition-all touch-none">
+                  <div class="w-14 h-14 pointer-events-none">${f.svg}</div>
+                </div>
+              `).join('')}
+            </div>
+            <!-- Woven Shape Basket Zone -->
+            <div id="drop-basket" data-basket-target="basket"
+              onclick="handleSortTap('${correctFruit.id}', '${correctFruit.id}')"
+              class="w-full max-w-xs h-32 rounded-3xl bg-[#fff7eb] border-4 border-dashed border-[#ffb6d4] flex flex-col items-center justify-center p-3 relative shadow-inner cursor-pointer hover:bg-[#fff0f6] transition-all">
+              <div class="w-10 h-10 mb-1 pointer-events-none">${t.targetShape.svg}</div>
+              <span class="text-sm font-black text-[#d83c74] pointer-events-none">${currentLang === 'ms' ? 'Bakul ' + t.targetShape.nameBM : t.targetShape.nameEN + ' Basket'}</span>
+              <span class="text-[11px] font-bold text-[#b07692] pointer-events-none">${currentLang === 'ms' ? 'Tarik atau tekan buah yang sepadan' : 'Drag or tap the matching fruit'}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      /* VARIATION F: Cari Semua Buah Bentuk Sama (Scene multi-tap) */
+      else if (t.type === 'F') {
+        const targetFruits = FRUITS.filter(f => f.shape === t.targetShape.id);
+        const distractors = FRUITS.filter(f => f.shape !== t.targetShape.id).sort(() => 0.5 - Math.random()).slice(0, 3);
+        const allItems = [...targetFruits, ...distractors].sort(() => 0.5 - Math.random());
+        t.neededFruits = targetFruits.map(f => f.id);
+        t.foundFruits = [];
+
+        container.innerHTML = `
+          <div class="flex flex-col items-center w-full max-w-md">
+            <div class="grid grid-cols-3 gap-3 w-full">
+              ${allItems.map(fruit => `
+                <button id="multi-fruit-${fruit.id}" onclick="handleMultiFruitTap('${fruit.id}')" class="diorama-card p-2 sm:p-3 flex flex-col items-center justify-center hover:scale-105 active:scale-95 transition-all">
+                  <div class="w-16 h-16 sm:w-18 sm:h-18">${fruit.svg}</div>
+                  <span class="text-xs font-black text-[#d83c74] mt-1">${currentLang === 'ms' ? fruit.nameBM : fruit.nameEN}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      /* VARIATION G: Bentuk Mana Hilang? (Sequence Pattern) */
+      else if (t.type === 'G') {
+        const s1 = t.targetShape;
+        const s2 = Object.values(SHAPES).filter(s => s.id !== s1.id).sort(() => 0.5 - Math.random())[0];
+        // Sequence: s1 -> s2 -> s1 -> ? (answer is s2)
+        const sequence = [s1, s2, s1];
+        const answer = s2;
+        const distractor = Object.values(SHAPES).filter(s => s.id !== s1.id && s.id !== s2.id).sort(() => 0.5 - Math.random())[0];
+        const choices = [answer, distractor].sort(() => 0.5 - Math.random());
+
+        container.innerHTML = `
+          <div class="flex flex-col items-center w-full max-w-lg">
+            <!-- Pattern Display Row -->
+            <div class="flex items-center space-x-2 sm:space-x-3 bg-white p-3 rounded-3xl border-3 border-[#ffd0e2] shadow-sm mb-5">
+              ${sequence.map(s => `
+                <div class="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center p-1 bg-[#fff0f6] rounded-2xl border border-[#ffbad6]">
+                  ${s.svg}
+                </div>
+              `).join('')}
+              <div class="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center p-1 bg-[#ffe082] rounded-2xl border-2 border-dashed border-[#ffb300] text-2xl font-black text-[#7a4800]">
+                ?
+              </div>
+            </div>
+
+            <!-- Answer Choices -->
+            <div class="flex space-x-4">
+              ${choices.map(c => `
+                <button onclick="handleSequenceTap('${c.id}', '${answer.id}')" class="diorama-btn bg-white p-3.5 rounded-3xl flex flex-col items-center justify-center border-3 border-[#ffd0e2] hover:scale-105 active:scale-95 transition-all">
+                  <div class="w-16 h-16">${c.svg}</div>
+                  <span class="text-xs font-black text-[#7442d4] mt-1 text-center w-full leading-tight px-1">${currentLang === 'ms' ? c.nameBM : c.nameEN}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      /* VARIATION H: Bentuk Dalam Dunia Buah (Diorama spot and tap) */
+      else if (t.type === 'H') {
+        const stallItems = [t.targetFruit, ...FRUITS.filter(f => f.id !== t.targetFruit.id).sort(() => 0.5 - Math.random()).slice(0, 3)].sort(() => 0.5 - Math.random());
+
+        container.innerHTML = `
+          <div class="w-full max-w-lg flex flex-col items-center">
+            <!-- Miniature Fruit Market Counter Stall -->
+            <div class="w-full bg-[#fceddb] p-4 rounded-3xl border-4 border-[#e2ab74] shadow-md flex flex-col items-center relative">
+              <div class="absolute -top-4 px-4 py-1 rounded-full bg-[#ff7ba8] text-white text-xs font-black tracking-wide">
+                ${currentLang === 'ms' ? 'Gerai Buah Comel' : 'Cute Fruit Stall'}
+              </div>
+              <div class="grid grid-cols-4 gap-2 w-full pt-3">
+                ${stallItems.map(f => `
+                  <button onclick="handleOptionTap('${f.id}', '${t.targetFruit.id}')" class="bg-white/90 p-2 rounded-2xl border-2 border-[#f0b686] flex flex-col items-center hover:scale-105 active:scale-95 transition-all">
+                    <div class="w-14 h-14">${f.svg}</div>
+                    <span class="text-[10px] font-extrabold text-[#7442d4] mt-1">${currentLang === 'ms' ? f.nameBM : f.nameEN}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      /* VARIATION J: Drag-to-Connect Shape Challenge (MANDATORY Live SVG Drag Line) */
+      else {
+        dragOverlay.style.display = 'block';
+        // Pastikan buah kedua mempunyai bentuk yang berbeza supaya setiap bentuk unik
+        const otherFruit = FRUITS.filter(f => f.shape !== t.targetFruit.shape).sort(() => 0.5 - Math.random())[0];
+        const fruitList = [t.targetFruit, otherFruit];
+        const shapeList = fruitList.map(f => SHAPES[f.shape]).sort(() => 0.5 - Math.random());
+
+        // Tetapkan penjejak sambungan untuk variasi ini
+        t.fruitList = fruitList;
+        t.connectedFruits = new Set();
+        t.connectedShapes = new Set();
+        t.totalPairs = fruitList.length; // 2 pasangan
+
+        container.innerHTML = `
+          <div class="w-full max-w-lg flex justify-between items-center px-4 sm:px-8 py-2 relative">
+            <!-- Left: Fruit Nodes -->
+            <div class="flex flex-col space-y-4 z-20">
+              ${fruitList.map(f => `
+                <div id="drag-node-fruit-${f.id}" data-fruit-id="${f.id}" data-shape-match="${f.shape}" class="diorama-card p-2 w-24 h-24 sm:w-28 sm:h-28 flex flex-col items-center justify-center cursor-pointer select-none hover:scale-105 active:scale-95 transition-all"
+                  onpointerdown="startDragConnect(event, '${f.id}')">
+                  <div class="w-14 h-14 sm:w-16 sm:h-16 pointer-events-none">${f.svg}</div>
+                  <span class="text-[11px] font-extrabold text-[#d83c74] pointer-events-none text-center w-full leading-tight px-1">${currentLang === 'ms' ? f.nameBM : f.nameEN}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            <!-- Right: Shape Nodes -->
+            <div class="flex flex-col space-y-4 z-20">
+              ${shapeList.map(s => `
+                <div id="drag-node-shape-${s.id}" data-shape-id="${s.id}" class="diorama-card p-2 w-24 h-24 sm:w-28 sm:h-28 flex flex-col items-center justify-center cursor-pointer select-none hover:scale-105 transition-all"
+                  onpointerup="finishDragConnect(event, '${s.id}')">
+                  <div class="w-14 h-14 sm:w-16 sm:h-16 pointer-events-none">${s.svg}</div>
+                  <span class="text-[11px] font-extrabold text-[#7442d4] pointer-events-none text-center w-full leading-tight px-1">${currentLang === 'ms' ? s.nameBM : s.nameEN}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    window.addEventListener('pointermove', (e) => {
+      if (!activeDragConnection.isDragging) return;
+      const overlay = document.getElementById('drag-svg-overlay');
+      const rect = overlay.getBoundingClientRect();
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
+
+      const path = document.getElementById('svg-active-drag-line');
+      if (path) {
+        path.setAttribute('d', `M ${activeDragConnection.startX},${activeDragConnection.startY} C ${activeDragConnection.startX + 50},${activeDragConnection.startY} ${currentX - 50},${currentY} ${currentX},${currentY}`);
+      }
+    });
+
+    window.addEventListener('pointerup', (e) => {
+      if (!activeDragConnection.isDragging) return;
+      // Semak sama ada dilepaskan di atas nod bentuk (sokongan skrin sentuh & tetikus)
+      const elem = document.elementFromPoint(e.clientX, e.clientY);
+      const shapeNode = elem ? elem.closest('[data-shape-id]') : null;
+      if (shapeNode) {
+        const shapeId = shapeNode.getAttribute('data-shape-id');
+        finishDragConnect(e, shapeId);
+      } else {
+        cancelDragConnect();
+      }
+    });
+
+    function startDragConnect(e, fruitId) {
+      if (isTaskLocked) return;
+      // Jangan benarkan heretan pada buah yang sudah berjaya disambungkan
+      if (currentTask && currentTask.connectedFruits && currentTask.connectedFruits.has(fruitId)) return;
+      e.preventDefault();
+      const el = document.getElementById(`drag-node-fruit-${fruitId}`);
+      if (!el) return;
+      const overlay = document.getElementById('drag-svg-overlay');
+      const oRect = overlay.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+
+      activeDragConnection = {
+        isDragging: true,
+        fruitId: fruitId,
+        startX: (elRect.right - oRect.left) - 10,
+        startY: (elRect.top + elRect.height / 2) - oRect.top
+      };
+
+      const path = document.getElementById('svg-active-drag-line');
+      if (path) path.setAttribute('d', `M ${activeDragConnection.startX},${activeDragConnection.startY} L ${activeDragConnection.startX},${activeDragConnection.startY}`);
+    }
+
+    function finishDragConnect(e, shapeId) {
+      if (!activeDragConnection.isDragging) return;
+      const fruitId = activeDragConnection.fruitId;
+      const fruitObj = FRUITS.find(f => f.id === fruitId);
+
+      // Sekiranya buah atau bentuk ini telah disambungkan sebelumnya, batalkan
+      if (currentTask.connectedFruits && (currentTask.connectedFruits.has(fruitId) || currentTask.connectedShapes.has(shapeId))) {
+        cancelDragConnect();
+        return;
+      }
+
+      const isCorrect = fruitObj && fruitObj.shape === shapeId;
+
+      if (isCorrect) {
+        // Lukis garisan kekal SVG antara buah dan bentuk yang betul
+        const fruitEl = document.getElementById(`drag-node-fruit-${fruitObj.id}`);
+        const shapeEl = document.getElementById(`drag-node-shape-${shapeId}`);
+        const overlay = document.getElementById('drag-svg-overlay');
+        const oRect = overlay.getBoundingClientRect();
+        const fRect = fruitEl.getBoundingClientRect();
+        const sRect = shapeEl.getBoundingClientRect();
+
+        const x1 = (fRect.right - oRect.left) - 10;
+        const y1 = (fRect.top + fRect.height / 2) - oRect.top;
+        const x2 = (sRect.left - oRect.left) + 10;
+        const y2 = (sRect.top + sRect.height / 2) - oRect.top;
+
+        const lineGroup = document.getElementById('svg-permanent-lines');
+        const permanentPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        permanentPath.setAttribute('d', `M ${x1},${y1} C ${x1 + 60},${y1} ${x2 - 60},${y2} ${x2},${y2}`);
+        permanentPath.setAttribute('stroke', '#ff4382');
+        permanentPath.setAttribute('stroke-width', '8');
+        permanentPath.setAttribute('stroke-linecap', 'round');
+        permanentPath.setAttribute('fill', 'none');
+        permanentPath.setAttribute('filter', 'url(#lineGlow)');
+        lineGroup.appendChild(permanentPath);
+
+        cancelDragConnect();
+
+        // Tandakan buah dan bentuk ini sebagai telah disambungkan
+        if (!currentTask.connectedFruits) currentTask.connectedFruits = new Set();
+        if (!currentTask.connectedShapes) currentTask.connectedShapes = new Set();
+        currentTask.connectedFruits.add(fruitId);
+        currentTask.connectedShapes.add(shapeId);
+
+        // Kunci pasangan ini dan berikan animasi ceria
+        fruitEl.classList.add('anim-cheer', 'ring-4', 'ring-[#2bb49c]');
+        shapeEl.classList.add('anim-cheer', 'ring-4', 'ring-[#2bb49c]');
+        fruitEl.style.cursor = 'default';
+        shapeEl.style.cursor = 'default';
+        fruitEl.style.pointerEvents = 'none';
+        shapeEl.style.pointerEvents = 'none';
+
+        soundSuccess();
+        triggerMascotCheer();
+
+        // Semak sama ada KESEMUA pasangan telah selesai disambung
+        if (currentTask.connectedFruits.size >= currentTask.totalPairs) {
+          // Semua selesai! Baru panggil penyelesaian soalan dan mara ke soalan seterusnya
+          handleSuccessAction();
+        } else {
+          // Masih ada pasangan yang belum disambungkan, beri galakan untuk teruskan
+          showFeedbackBanner(currentLang === 'ms' ? 'Bagus! Sambung satu lagi!' : 'Great! Connect the other one!', true);
+        }
+      } else {
+        cancelDragConnect();
+        // Sekiranya silap padanan, goyangkan kad dan beri murid peluang cuba lagi tanpa melompat soalan
+        soundGentleWobble();
+        showFeedbackBanner(currentLang === 'ms' ? I18N.ms.tryAgain : I18N.en.tryAgain, false);
+        const fruitEl = document.getElementById(`drag-node-fruit-${fruitId}`);
+        if (fruitEl) {
+          fruitEl.classList.remove('anim-wobble');
+          void fruitEl.offsetWidth;
+          fruitEl.classList.add('anim-wobble');
+        }
+      }
+    }
+
+    function cancelDragConnect() {
+      activeDragConnection.isDragging = false;
+      const path = document.getElementById('svg-active-drag-line');
+      if (path) path.setAttribute('d', '');
+    }
+
+    function handleOptionTap(selectedId, targetId) {
+      if (isTaskLocked) return;
+      if (selectedId === targetId) {
+        handleSuccessAction();
+      } else {
+        handleWrongFeedback();
+      }
+    }
+
+    function handleShapeTap(selectedShapeId, targetShapeId) {
+      if (isTaskLocked) return;
+      if (selectedShapeId === targetShapeId) {
+        handleSuccessAction();
+      } else {
+        handleWrongFeedback();
+      }
+    }
+
+    function handleSortTap(selectedFruitId, targetFruitId) {
+      if (isTaskLocked) return;
+      if (selectedFruitId === targetFruitId) {
+        handleSuccessAction();
+      } else {
+        handleWrongFeedback();
+      }
+    }
+
+    function handleSequenceTap(selectedId, answerId) {
+      if (isTaskLocked) return;
+      if (selectedId === answerId) {
+        handleSuccessAction();
+      } else {
+        handleWrongFeedback();
+      }
+    }
+
+    function handleMultiFruitTap(fruitId) {
+      if (isTaskLocked) return;
+      const t = currentTask;
+      if (t.neededFruits.includes(fruitId)) {
+        if (!t.foundFruits.includes(fruitId)) {
+          t.foundFruits.push(fruitId);
+          soundClick();
+          const btn = document.getElementById(`multi-fruit-${fruitId}`);
+          if (btn) {
+            btn.classList.add('border-[#2bb49c]', 'bg-[#e6faf6]');
+            btn.classList.add('anim-cheer');
+          }
+        }
+        if (t.foundFruits.length === t.neededFruits.length) {
+          handleSuccessAction();
+        }
+      } else {
+        handleWrongFeedback();
+      }
+    }
+
+    /* Sistem Heret & Lepas Mudah Alih (Mobile-Ready Pointer Drag & Drop) */
+    function initFruitDrag(e, fruitId, correctShapeId) {
+      if (isTaskLocked) return;
+      e.preventDefault();
+      const el = e.currentTarget;
+      try {
+        el.setPointerCapture(e.pointerId);
+      } catch (err) {}
+
+      const startX = e.clientX;
+      const startY = e.clientY;
+      el.style.transition = 'none';
+      el.style.zIndex = '50';
+
+      soundClick();
+
+      const onPointerMove = (moveEvt) => {
+        if (moveEvt.pointerId !== e.pointerId) return;
+        const dx = moveEvt.clientX - startX;
+        const dy = moveEvt.clientY - startY;
+        el.style.transform = `translate(${dx}px, ${dy}px) scale(1.08)`;
+
+        // Sorot bentuk sasaran di bawah jari
+        el.style.pointerEvents = 'none';
+        const underElem = document.elementFromPoint(moveEvt.clientX, moveEvt.clientY);
+        el.style.pointerEvents = 'auto';
+
+        const dropTarget = underElem ? underElem.closest('[data-shape-target]') : null;
+        document.querySelectorAll('[data-shape-target]').forEach(target => {
+          if (target === dropTarget) {
+            target.classList.add('bg-[#ffe0ee]', 'scale-105', 'border-[#ff4382]');
+          } else {
+            target.classList.remove('bg-[#ffe0ee]', 'scale-105', 'border-[#ff4382]');
+          }
+        });
+      };
+
+      const onPointerUp = (upEvt) => {
+        if (upEvt.pointerId !== e.pointerId) return;
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+
+        document.querySelectorAll('[data-shape-target]').forEach(target => {
+          target.classList.remove('bg-[#ffe0ee]', 'scale-105', 'border-[#ff4382]');
+        });
+
+        el.style.pointerEvents = 'none';
+        const underElem = document.elementFromPoint(upEvt.clientX, upEvt.clientY);
+        el.style.pointerEvents = 'auto';
+
+        const dropTarget = underElem ? underElem.closest('[data-shape-target]') : null;
+
+        if (dropTarget) {
+          const droppedShapeId = dropTarget.getAttribute('data-shape-target');
+          if (droppedShapeId === correctShapeId) {
+            el.style.transition = 'all 0.25s ease';
+            el.style.transform = 'scale(1.15)';
+            handleSuccessAction();
+            return;
+          } else {
+            el.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            el.style.transform = 'translate(0px, 0px)';
+            el.style.zIndex = '30';
+            handleWrongFeedback();
+            return;
+          }
+        }
+
+        // Sekiranya dilepaskan di luar kawasan sasaran, pulangkan buah ke posisi asal
+        el.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        el.style.transform = 'translate(0px, 0px)';
+        el.style.zIndex = '30';
+      };
+
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
+    }
+
+    function handleShapeTargetTap(shapeId, correctShapeId) {
+      if (isTaskLocked) return;
+      if (shapeId === correctShapeId) {
+        handleSuccessAction();
+      } else {
+        handleWrongFeedback();
+      }
+    }
+
+    function initBasketFruitDrag(e, fruitId, correctFruitId) {
+      if (isTaskLocked) return;
+      e.preventDefault();
+      const el = e.currentTarget;
+      try {
+        el.setPointerCapture(e.pointerId);
+      } catch (err) {}
+
+      const startX = e.clientX;
+      const startY = e.clientY;
+      el.style.transition = 'none';
+      el.style.zIndex = '50';
+
+      soundClick();
+
+      const onPointerMove = (moveEvt) => {
+        if (moveEvt.pointerId !== e.pointerId) return;
+        const dx = moveEvt.clientX - startX;
+        const dy = moveEvt.clientY - startY;
+        el.style.transform = `translate(${dx}px, ${dy}px) scale(1.08)`;
+
+        el.style.pointerEvents = 'none';
+        const underElem = document.elementFromPoint(moveEvt.clientX, moveEvt.clientY);
+        el.style.pointerEvents = 'auto';
+
+        const basket = underElem ? underElem.closest('#drop-basket') : null;
+        const basketEl = document.getElementById('drop-basket');
+        if (basket && basketEl) {
+          basketEl.classList.add('bg-[#ffe0ee]', 'scale-105', 'border-[#ff4382]');
+        } else if (basketEl) {
+          basketEl.classList.remove('bg-[#ffe0ee]', 'scale-105', 'border-[#ff4382]');
+        }
+      };
+
+      const onPointerUp = (upEvt) => {
+        if (upEvt.pointerId !== e.pointerId) return;
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+
+        const basketEl = document.getElementById('drop-basket');
+        if (basketEl) {
+          basketEl.classList.remove('bg-[#ffe0ee]', 'scale-105', 'border-[#ff4382]');
+        }
+
+        el.style.pointerEvents = 'none';
+        const underElem = document.elementFromPoint(upEvt.clientX, upEvt.clientY);
+        el.style.pointerEvents = 'auto';
+
+        const isOverBasket = underElem && underElem.closest('#drop-basket');
+        if (isOverBasket) {
+          if (fruitId === correctFruitId) {
+            el.style.transition = 'all 0.25s ease';
+            el.style.transform = 'scale(0.8)';
+            el.style.opacity = '0';
+            handleSuccessAction();
+          } else {
+            el.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            el.style.transform = 'translate(0px, 0px)';
+            el.style.zIndex = '10';
+            handleWrongFeedback();
+          }
+        } else {
+          el.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          el.style.transform = 'translate(0px, 0px)';
+          el.style.zIndex = '10';
+        }
+      };
+
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
+    }
+
+    function handleSuccessAction() {
+      isTaskLocked = true;
+      soundSuccess();
+      currentScore += 10;
+      correctCount++;
+      document.getElementById('stat-score-val').textContent = currentScore;
+
+      triggerMascotCheer();
+      showFeedbackBanner(currentLang === 'ms' ? I18N.ms.correctMsg : I18N.en.correctMsg, true);
+
+      // Auto-progress smoothly to the next task
+      setTimeout(() => {
+        currentGameIndex++;
+        generateNextTask();
+      }, 1200);
+    }
+
+    function handleWrongFeedback() {
+      // Kunci interaksi sementara untuk elakkan dwi-tekanan
+      isTaskLocked = true;
+      soundGentleWobble();
+      wrongCount++;
+      showFeedbackBanner(currentLang === 'ms' ? I18N.ms.tryAgain : I18N.en.tryAgain, false);
+
+      const stage = document.getElementById('game-stage-container');
+      if (stage) {
+        stage.classList.remove('anim-wobble');
+        void stage.offsetWidth;
+        stage.classList.add('anim-wobble');
+      }
+
+      // Terus maju ke soalan berikutnya selepas maklum balas lembut dipaparkan
+      setTimeout(() => {
+        currentGameIndex++;
+        generateNextTask();
+      }, 1000);
+    }
+
+    function showFeedbackBanner(msg, isSuccess) {
+      const banner = document.getElementById('feedback-banner');
+      if (!banner) return;
+      banner.textContent = msg;
+      if (isSuccess) {
+        banner.className = "absolute top-4 py-2 px-6 rounded-2xl font-black text-sm sm:text-base border-2 shadow-lg transition-all duration-300 transform translate-y-0 opacity-100 z-40 bg-[#d4f9e8] text-[#127d58] border-[#72e4b4]";
+      } else {
+        banner.className = "absolute top-4 py-2 px-6 rounded-2xl font-black text-sm sm:text-base border-2 shadow-lg transition-all duration-300 transform translate-y-0 opacity-100 z-40 bg-[#ffe8ed] text-[#b8325a] border-[#ff9cb8]";
+      }
+
+      setTimeout(() => {
+        banner.classList.add('-translate-y-16', 'opacity-0');
+        banner.classList.remove('translate-y-0', 'opacity-100');
+      }, 900);
+    }
+
+    function finishGameSession() {
+      showScreen('screen-result');
+      triggerMascotCheer();
+
+      const total = correctCount + wrongCount;
+      const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 100;
+
+      document.getElementById('res-score-val').textContent = currentScore;
+      document.getElementById('res-correct-val').textContent = correctCount;
+      document.getElementById('res-acc-val').textContent = `${accuracy}%`;
+
+      const data = loadSavedData();
+      saveProfileData(data);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Language toggles
+      document.getElementById('lang-bm').addEventListener('click', () => setLanguage('ms'));
+      document.getElementById('lang-en').addEventListener('click', () => setLanguage('en'));
+
+      // Sound toggle
+      const btnSound = document.getElementById('btn-sound-toggle');
+      btnSound.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        document.getElementById('icon-sound-on').classList.toggle('hidden', !soundEnabled);
+        document.getElementById('icon-sound-off').classList.toggle('hidden', soundEnabled);
+        if (soundEnabled) soundClick();
+      });
+
+      // Brand Home button
+      document.getElementById('btn-brand-home').addEventListener('click', () => {
+        soundClick();
+        showScreen('screen-home');
+      });
+
+      // Load saved language preference or default to BM
+      const saved = loadSavedData();
+      setLanguage(saved.lang || 'ms');
+      showScreen('screen-home');
+    });
+  </script>
+</body>
+</html>
